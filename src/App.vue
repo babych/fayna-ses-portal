@@ -45,6 +45,27 @@ const toggleLanguage = () => {
   }
 };
 
+const isGraphiteTheme = ref(false);
+if (typeof localStorage !== 'undefined') {
+  isGraphiteTheme.value = localStorage.getItem('fayna_theme') === 'graphite';
+  if (typeof document !== 'undefined' && isGraphiteTheme.value) {
+    document.documentElement.setAttribute('data-theme', 'graphite');
+  }
+}
+
+const toggleGraphiteTheme = () => {
+  isGraphiteTheme.value = !isGraphiteTheme.value;
+  if (typeof document !== 'undefined') {
+    if (isGraphiteTheme.value) {
+      document.documentElement.setAttribute('data-theme', 'graphite');
+      localStorage.setItem('fayna_theme', 'graphite');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.removeItem('fayna_theme');
+    }
+  }
+};
+
 const stationsMeta = ref<StationMetadata[]>([...PRECONFIGURED_STATIONS]);
 // Pre-render static skeleton cards immediately on mount (Zero-CLS)
 const telemetries = ref<StationTelemetry[]>(createInitialStationTelemetries());
@@ -974,6 +995,20 @@ const handleModalDirectInstall = async () => {
           <a href="https://github.com/babych/fayna-ses-portal" target="_blank" class="hover:text-slate-900 transition-colors font-semibold">
             GitHub
           </a>
+          <span>•</span>
+          <button
+            @click="toggleGraphiteTheme"
+            type="button"
+            :title="isGraphiteTheme ? 'Default theme' : 'Graphite theme'"
+            class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium transition-colors border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-900"
+            :class="{ 'border-[#3b4352] text-[#f0f2f5]': isGraphiteTheme }"
+          >
+            <span
+              class="w-2 h-2 rounded-full transition-transform"
+              :class="isGraphiteTheme ? 'bg-[#27ae60] scale-110' : 'bg-slate-300'"
+            ></span>
+            <span>{{ t('themeGraphite') }}</span>
+          </button>
           <span>•</span>
 
           <div ref="dashboardButtonRef" class="relative">
