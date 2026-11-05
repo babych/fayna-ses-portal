@@ -1460,7 +1460,7 @@ const selectedDayMetrics = computed(() => {
                 v-for="hour in 24" 
                 :key="hour"
                 @click="toggleDailyHourDetail(hour - 1, dayBlackoutData.hourlyStats[hour - 1])"
-                class="aspect-square sm:aspect-auto sm:h-11 rounded-xl sm:rounded-md flex flex-col items-center justify-between py-1 sm:py-1 transition-all overflow-visible border relative group/cell cursor-pointer shadow-xs select-none"
+                class="aspect-square flex flex-col items-center justify-between py-1 transition-all overflow-visible border relative group/cell cursor-pointer shadow-xs select-none"
                 :class="{
                   'ring-2 ring-slate-900 ring-offset-1': activeDailyHourDetail && activeDailyHourDetail.hour === hour - 1,
                   'border-nordic-terracotta-600 text-white font-bold shadow-sm': dayBlackoutData.hourlyStats[hour - 1].level === 'full',
@@ -1470,8 +1470,8 @@ const selectedDayMetrics = computed(() => {
                 }"
                 :style="dayBlackoutData.hourlyStats[hour - 1].level === 'partial' ? {
                   background: dayBlackoutData.hourlyStats[hour - 1].isOngoing
-                    ? `linear-gradient(to top, #B91C1C 0%, #B91C1C ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 100%)`
-                    : `linear-gradient(to top, #B91C1C 0%, #B91C1C ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 100%)`
+                    ? `linear-gradient(to right, #B91C1C 0%, #B91C1C ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 100%)`
+                    : `linear-gradient(to right, #B91C1C 0%, #B91C1C ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 100%)`
                 } : dayBlackoutData.hourlyStats[hour - 1].level === 'full' ? {
                   background: '#B91C1C'
                 } : {}"
@@ -1528,7 +1528,7 @@ const selectedDayMetrics = computed(() => {
                 <span>{{ t('history.legendGrid') }}</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded bg-gradient-to-t from-nordic-terracotta-700 from-50% to-nordic-green-100 to-50% border border-nordic-ochre-300"></span>
+                <span class="w-3 h-3 rounded bg-gradient-to-r from-nordic-terracotta-700 from-50% to-nordic-green-100 to-50% border border-nordic-ochre-300"></span>
                 <span class="font-bold text-nordic-ochre-700">{{ t('history.exactOutageFill') }}</span>
               </div>
               <div class="flex items-center gap-1.5">
