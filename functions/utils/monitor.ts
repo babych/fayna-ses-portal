@@ -211,14 +211,22 @@ export async function checkAndDispatchOutages(env: Env): Promise<{
   // - Partial Outage (e.g. 1-4 stations off) -> silent / discreet notification without beep/vibrate (silent: true)
   const isPartialOutage = currentBlackoutCount > 0 && currentBlackoutCount < activeStations.length;
 
+  const onlineWithPowerCount = activeStations.length - currentBlackoutCount;
+
   if (currentBlackoutCount === 0) {
     title = '🟢 Світло є у всіх будинках!';
     body = `Міську електромережу відновлено на всіх ${activeStations.length} станціях ЖК Файна Таун.`;
   } else if (currentBlackoutCount === STATIONS.length) {
     title = '🔴 Повний блекаут комплексу';
     body = `Всі ${STATIONS.length} станцій перейшли на живлення від батарейних систем.`;
+  } else if (currentBlackoutCount < prevBlackoutCount) {
+    // Trend: Improving / Partial Power Recovery
+    const poweredStations = activeStations.filter((s) => !s.isBlackout);
+    const restoredNames = poweredStations.map((s) => s.name).join(', ');
+    title = `🟡 Часткове відновлення світла (${onlineWithPowerCount} з ${activeStations.length})`;
+    body = `Світло повернулося: ${restoredNames}. Ще на АКБ: ${currentBlackoutCount} будинків.`;
   } else {
-    // Partial outage
+    // Trend: Worsening or initial partial outage
     const affectedNames = blackoutStations.map((s) => s.name).join(', ');
     title = `🟡 Частковий блекаут (${currentBlackoutCount} з ${activeStations.length})`;
     body = `Без міського живлення: ${affectedNames}. Решта будинків зі світлом.`;
