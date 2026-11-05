@@ -121,11 +121,11 @@ export async function checkAndDispatchOutages(env: Env): Promise<{
     if (st.recentSamples && st.recentSamples.length > 0) {
       for (const sample of st.recentSamples) {
         telemetryStatements.push(
-          env.DB.prepare(
+          env.DB.prepare(`
             INSERT OR IGNORE INTO station_telemetry 
              (station_id, timestamp, soc, batt_w, grid_w, load_w, pv_w) 
              VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
-          ).bind(
+          `).bind(
             st.id,
             sample.t,
             sample.soc,
