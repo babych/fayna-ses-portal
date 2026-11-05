@@ -1513,18 +1513,18 @@ const selectedDayMetrics = computed(() => {
               <span class="text-xs font-bold text-slate-700 block">{{ t('history.timeline24h') }}</span>
             </div>
 
-            <div class="grid grid-cols-6 sm:grid-cols-12 lg:grid-cols-24 gap-1.5 sm:gap-1">
+            <div class="grid grid-cols-6 sm:grid-cols-12 lg:grid-cols-24 border border-slate-300/80 rounded-sm overflow-hidden bg-slate-200/60 gap-px">
               <div 
                 v-for="hour in 24" 
                 :key="hour"
                 @click="toggleDailyHourDetail(hour - 1, dayBlackoutData.hourlyStats[hour - 1])"
-                class="aspect-square flex flex-col items-center justify-between py-1 transition-all overflow-visible border relative group/cell cursor-pointer shadow-xs select-none"
+                class="aspect-square flex flex-col items-center justify-between py-1 transition-all overflow-visible relative group/cell cursor-pointer select-none"
                 :class="{
-                  'ring-2 ring-slate-900 ring-offset-1': activeDailyHourDetail && activeDailyHourDetail.hour === hour - 1,
-                  'border-nordic-terracotta-600 text-white font-bold shadow-sm': dayBlackoutData.hourlyStats[hour - 1].level === 'full',
-                  'border-nordic-ochre-300 text-slate-900 font-bold': dayBlackoutData.hourlyStats[hour - 1].level === 'partial',
-                  'bg-nordic-green-100 text-nordic-green-800 border-nordic-green-200/60 font-semibold': dayBlackoutData.hourlyStats[hour - 1].level === 'none',
-                  'bg-slate-100/70 text-slate-400 border-dashed border-slate-200 font-medium': dayBlackoutData.hourlyStats[hour - 1].level === 'future',
+                  'ring-2 ring-slate-900 ring-inset z-20': activeDailyHourDetail && activeDailyHourDetail.hour === hour - 1,
+                  'text-white font-bold': dayBlackoutData.hourlyStats[hour - 1].level === 'full',
+                  'text-slate-900 font-bold': dayBlackoutData.hourlyStats[hour - 1].level === 'partial',
+                  'bg-nordic-green-100 text-nordic-green-800 font-semibold': dayBlackoutData.hourlyStats[hour - 1].level === 'none',
+                  'bg-slate-100/80 text-slate-400 font-medium': dayBlackoutData.hourlyStats[hour - 1].level === 'future',
                 }"
                 :style="dayBlackoutData.hourlyStats[hour - 1].level === 'partial' ? {
                   background: dayBlackoutData.hourlyStats[hour - 1].gradientStyle || buildHourlyGradient(dayBlackoutData.hourlyStats[hour - 1].segments, dayBlackoutData.hourlyStats[hour - 1].isOngoing, dayBlackoutData.hourlyStats[hour - 1].percent)
