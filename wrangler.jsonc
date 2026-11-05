@@ -1,0 +1,12 @@
+{
+  "name": "fayna-ses",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2024-04-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fayna-ses-db-eu",
+      "database_id": "61f0a357-118c-4424-a276-24968729e20d"
+    }
+  ]
+}

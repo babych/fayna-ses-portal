@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Refined Graphite Matte Background Gradient -->
+    <linearGradient id="graphiteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#323842" />
+      <stop offset="100%" stop-color="#242830" />
+    </linearGradient>
+
+    <!-- Subtle inner highlight for graphite tactile rim -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a5260" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#181a20" stop-opacity="0.8" />
+    </linearGradient>
+
+    <!-- Solar & Battery Emerald Energy Gradient -->
+    <linearGradient id="energyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle Base Container in True Graphite -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#graphiteGrad)" />
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="url(#rimGrad)" stroke-width="4" />
+
+  <!-- Flat Minimalist 2D Architectural Letter 'F' -->
+  <!-- 1. Vertical Spine (Crisp Platinum White) -->
+  <rect x="148" y="128" width="52" height="256" rx="14" fill="#f8fafc" />
+
+  <!-- 2. Top Horizontal Bar (Crisp Platinum White) -->
+  <rect x="148" y="128" width="216" height="52" rx="14" fill="#f8fafc" />
+
+  <!-- 3. Mid Horizontal Bar (Vibrant Solar Emerald Accent) -->
+  <rect x="148" y="234" width="168" height="48" rx="14" fill="url(#energyGrad)" />
+  
+  <!-- Subtle Energy Node Point (Minimalist dot accent) -->
+  <circle cx="340" cy="258" r="8" fill="#10b981" opacity="0.9" />
+</svg>

@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <!-- Background Gradient: Clean crisp architectural light background -->
+    <linearGradient id="lightBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </linearGradient>
+
+    <!-- Emerald Primary Gradient for Liquid and Accents -->
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow for Left Card -->
+    <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#0f172a" flood-opacity="0.06" />
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.04" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#lightBg)" />
+
+  <!-- Architectural Background Grid -->
+  <g stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 6" opacity="0.45">
+    <line x1="0" y1="105" x2="1200" y2="105" />
+    <line x1="0" y1="210" x2="1200" y2="210" />
+    <line x1="0" y1="315" x2="1200" y2="315" />
+    <line x1="0" y1="420" x2="1200" y2="420" />
+    <line x1="0" y1="525" x2="1200" y2="525" />
+    <line x1="200" y1="0" x2="200" y2="630" />
+    <line x1="400" y1="0" x2="400" y2="630" />
+    <line x1="600" y1="0" x2="600" y2="630" />
+    <line x1="800" y1="0" x2="800" y2="630" />
+    <line x1="1000" y1="0" x2="1000" y2="630" />
+  </g>
+
+  <!-- LEFT: Hero Battery Card -->
+  <g transform="translate(85, 105)" filter="url(#cardShadow)">
+    <rect width="270" height="420" rx="36" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" />
+    
+    <!-- Top Online Badge -->
+    <rect x="25" y="24" width="105" height="26" rx="8" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1" />
+    <text x="77" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="800" fill="#047857" text-anchor="middle">ONLINE • 100%</text>
+
+    <!-- Perfectly Aligned Battery -->
+    <g transform="translate(65, 75)">
+      <!-- Battery Terminal -->
+      <rect x="47" y="0" width="46" height="12" rx="4" fill="#cbd5e1" />
+      <!-- Battery Outer Glass Shell -->
+      <rect x="0" y="10" width="140" height="225" rx="28" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2.5" />
+      <!-- Inner Liquid Clip Mask & Fill -->
+      <g>
+        <clipPath id="batteryLiquidClip">
+          <rect x="4" y="14" width="132" height="217" rx="24" />
+        </clipPath>
+        <g clip-path="url(#batteryLiquidClip)">
+          <!-- Liquid Level Fill (85%) -->
+          <rect x="0" y="55" width="140" height="180" fill="url(#emeraldGrad)" />
+          <!-- Liquid Upper Wave -->
+          <path d="M0 60 Q35 48 70 60 T140 60 L140 78 Q105 66 70 78 T0 78 Z" fill="#ffffff" opacity="0.22" />
+          <!-- Sharp Center Lightning Bolt -->
+          <path d="M78 98 L56 142 L74 142 L66 182 L96 132 L78 132 Z" fill="#ffffff" />
+          <!-- SoC Text -->
+          <text x="70" y="206" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle">85% SoC</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Card Footer Metric -->
+    <text x="135" y="348" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#64748b" text-anchor="middle">Remaining Energy</text>
+    <text x="135" y="382" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="25" font-weight="900" fill="#0f172a" text-anchor="middle">51.0 / 60 kWh</text>
+  </g>
+
+  <!-- RIGHT: Content Column -->
+  <g transform="translate(415, 115)">
+    <!-- Complex Tag Pill -->
+    <rect width="255" height="32" rx="16" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5" />
+    <circle cx="16" cy="16" r="4.5" fill="#10b981" />
+    <text x="140" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="800" fill="#065f46" text-anchor="middle" letter-spacing="0.8">
+      FAYNA TOWN COMPLEX • KYIV
+    </text>
+
+    <!-- Main Heading -->
+    <text x="0" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="64" font-weight="900" fill="#0f172a" letter-spacing="-1.5">
+      Fayna SES Portal
+    </text>
+
+    <!-- Subtitles -->
+    <text x="0" y="146" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#334155">
+      Real-Time Solar, Battery Storage &amp; Blackout Analytics
+    </text>
+    <text x="0" y="178" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" font-weight="500" fill="#64748b">
+      Pure Light Theme Progressive Web App (PWA) with Edge CORS Caching
+    </text>
+
+    <!-- Specification Badges Row -->
+    <g transform="translate(0, 215)">
+      <!-- Badge 1: Storage -->
+      <g>
+        <rect width="215" height="54" rx="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" />
+        <!-- Icon: Battery SVG -->
+        <g transform="translate(14, 15)">
+          <rect x="0" y="3" width="22" height="18" rx="4" fill="none" stroke="#10b981" stroke-width="2" />
+          <rect x="22" y="8" width="3" height="8" rx="1.5" fill="#10b981" />
+          <rect x="3" y="6" width="12" height="12" rx="2" fill="#10b981" />
+        </g>
+        <text x="48" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#64748b" letter-spacing="0.5">BESS STORAGE</text>
+        <text x="48" y="43" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="900" fill="#0f172a">185 kWh Total</text>
+      </g>
+
+      <!-- Badge 2: Inverters -->
+      <g transform="translate(230, 0)">
+        <rect width="215" height="54" rx="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" />
+        <!-- Icon: Lightning SVG -->
+        <g transform="translate(15, 15)">
+          <path d="M12 2 L4 14 L11 14 L8 24 L18 10 L11 10 Z" fill="#f59e0b" />
+        </g>
+        <text x="45" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#64748b" letter-spacing="0.5">INVERTERS</text>
+        <text x="45" y="43" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="900" fill="#0f172a">12–20 kW 3-Phase</text>
+      </g>
+
+      <!-- Badge 3: Outage Grid -->
+      <g transform="translate(460, 0)">
+        <rect width="235" height="54" rx="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" />
+        <!-- Icon: Shield SVG -->
+        <g transform="translate(15, 15)">
+          <path d="M11 2 L3 6 V13 C3 18 7 22 11 24 C15 22 19 18 19 13 V6 Z" fill="none" stroke="#0284c7" stroke-width="2" />
+          <path d="M8 12 L10 14 L15 9" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+        <text x="45" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#64748b" letter-spacing="0.5">AUTONOMY GRID</text>
+        <text x="45" y="43" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="900" fill="#0f172a">24h Outage Timeline</text>
+      </g>
+    </g>
+
+    <!-- Mini Outage Timeline Preview Strip -->
+    <g transform="translate(0, 310)">
+      <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#64748b" letter-spacing="0.6">
+        SAMPLE 24H RESILIENCE TIMELINE
+      </text>
+      <g transform="translate(0, 14)">
+        <!-- Green power ON cells -->
+        <rect x="0" y="0" width="32" height="26" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+        <rect x="38" y="0" width="32" height="26" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+        <rect x="76" y="0" width="32" height="26" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+        <rect x="114" y="0" width="32" height="26" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+        <!-- Yellow partial cell -->
+        <rect x="152" y="0" width="32" height="26" rx="6" fill="#fef3c7" stroke="#fde68a" stroke-width="1.5" />
+        <!-- Red blackout cells -->
+        <rect x="190" y="0" width="32" height="26" rx="6" fill="#fee2e2" stroke="#fca5a5" stroke-width="1.5" />
+        <rect x="228" y="0" width="32" height="26" rx="6" fill="#fee2e2" stroke="#fca5a5" stroke-width="1.5" />
+        <rect x="266" y="0" width="32" height="26" rx="6" fill="#fee2e2" stroke="#fca5a5" stroke-width="1.5" />
+        <!-- Green power restored cells -->
+        <rect x="304" y="0" width="32" height="26" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+        <rect x="342" y="0" width="32" height="26" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+        <rect x="380" y="0" width="32" height="26" rx="6" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+        <!-- Upcoming dashed cells -->
+        <rect x="418" y="0" width="32" height="26" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3" />
+        <rect x="456" y="0" width="32" height="26" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3" />
+        <rect x="494" y="0" width="32" height="26" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3" />
+        <rect x="532" y="0" width="32" height="26" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3" />
+        <rect x="570" y="0" width="32" height="26" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3" />
+        <rect x="608" y="0" width="32" height="26" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3" />
+        <rect x="646" y="0" width="32" height="26" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3" />
+      </g>
+    </g>
+  </g>
+
+  <!-- Bottom Accent Line -->
+  <rect x="0" y="624" width="1200" height="6" fill="url(#emeraldGrad)" />
+</svg>

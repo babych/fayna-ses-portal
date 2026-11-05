@@ -1,0 +1,14 @@
+[allowlist]
+description = "Global allowlist for harmless public sample hashes and mock keys"
+paths = [
+  '''.env.example''',
+  '''src/constants/stations.ts''',
+  '''functions/api/\\[\\[path\\]\\].ts''',
+  '''package-lock.json'''
+]
+regexes = [
+  '''YOUR_VAPID_PUBLIC_KEY''',
+  '''YOUR_VAPID_PRIVATE_KEY''',
+  '''YOUR_256_BIT_ADMIN_API_KEY_HEX''',
+  '''5b23ffa9309d46958ac008ea54fd263d'''
+]
