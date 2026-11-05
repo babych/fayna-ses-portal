@@ -496,10 +496,24 @@ const handleBeforeInstallPrompt = (e: Event) => {
 };
 
 onMounted(async () => {
-  // Clear any pending App Badge upon user visiting the portal or returning from background
-  const clearBadgeSafely = () => {
-    if (typeof navigator !== 'undefined' && 'clearAppBadge' in navigator) {
-      (navigator as any).clearAppBadge().catch(() => {});
+  // Clear any pending App Badge & active notifications upon user visiting the portal or returning from background
+  const clearBadgeSafely = async () => {
+    if (typeof navigator !== 'undefined') {
+      try {
+        if ('setAppBadge' in navigator) {
+          await (navigator as any).setAppBadge(0).catch(() => {});
+        }
+        if ('clearAppBadge' in navigator) {
+          await (navigator as any).clearAppBadge().catch(() => {});
+        }
+        if ('serviceWorker' in navigator) {
+          const reg = await navigator.serviceWorker.getRegistration();
+          if (reg && 'getNotifications' in reg) {
+            const notifs = await reg.getNotifications();
+            notifs.forEach(n => n.close());
+          }
+        }
+      } catch (_) {}
     }
   };
   clearBadgeSafely();
@@ -628,8 +642,9 @@ watchEffect(() => {
   }
 
   // PWA App Badge: Always clear badge on user visiting the active web app
-  if (typeof navigator !== 'undefined' && 'clearAppBadge' in navigator) {
-    (navigator as any).clearAppBadge().catch(() => {});
+  if (typeof navigator !== 'undefined') {
+    if ('setAppBadge' in navigator) (navigator as any).setAppBadge(0).catch(() => {});
+    if ('clearAppBadge' in navigator) (navigator as any).clearAppBadge().catch(() => {});
   }
 
   complexStats.value = {

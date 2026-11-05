@@ -42,6 +42,9 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  if ('setAppBadge' in self.navigator) {
+    self.navigator.setAppBadge(0).catch(() => {});
+  }
   if ('clearAppBadge' in self.navigator) {
     self.navigator.clearAppBadge().catch(() => {});
   }
