@@ -1509,9 +1509,8 @@ const selectedDayMetrics = computed(() => {
 
           <!-- 24-hour timeline with exact percentage blackout fill -->
           <div class="p-3 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-1">
+            <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-bold text-slate-700 block">{{ t('history.timeline24h') }}</span>
-              <span class="text-[10px] sm:text-[11px] text-slate-400 font-semibold leading-tight">{{ t('history.exactPercentDesc') }}</span>
             </div>
 
             <div class="grid grid-cols-6 sm:grid-cols-12 lg:grid-cols-24 gap-1.5 sm:gap-1">
