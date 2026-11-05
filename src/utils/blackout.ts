@@ -24,6 +24,13 @@ export interface ContinuousPowerEvent {
   isOngoing?: boolean;
 }
 
+export interface OutageSegment {
+  startMinute: number;
+  endMinute: number;
+  startPercent: number;
+  endPercent: number;
+}
+
 export interface HourlyBlackoutStat {
   level: HourlyBlackoutLevel;
   minutes: number;
@@ -32,6 +39,8 @@ export interface HourlyBlackoutStat {
   tooltipText: string;
   matchingOutage?: BlackoutInterval;
   matchingPower?: PowerInterval;
+  segments?: OutageSegment[];
+  gradientStyle?: string;
 }
 
 export function computePowerIntervals(
@@ -171,4 +180,58 @@ export function computeHourlyStats(
       tooltipText: `${h}:00 — ${m} min`,
     };
   });
+}
+
+export function buildHourlyGradient(
+  segments: OutageSegment[] | undefined,
+  isOngoing: boolean = false,
+  percent: number = 0
+): string {
+  if (!segments || segments.length === 0) {
+    return isOngoing
+      ? 'linear-gradient(to right, #B91C1C 0%, #B91C1C ' + percent + '%, #f1f5f9 ' + percent + '%, #f1f5f9 100%)'
+      : 'linear-gradient(to right, #B91C1C 0%, #B91C1C ' + percent + '%, #DCFCE7 ' + percent + '%, #DCFCE7 100%)';
+  }
+
+  const bgLight = '#DCFCE7';
+  const bgOngoing = '#f1f5f9';
+  const bgBlackout = '#B91C1C';
+
+  // Merge segments
+  const sorted = [...segments].sort((a, b) => a.startPercent - b.startPercent);
+  const merged: { startPercent: number; endPercent: number }[] = [];
+  for (const seg of sorted) {
+    if (!merged.length) {
+      merged.push({ startPercent: seg.startPercent, endPercent: seg.endPercent });
+    } else {
+      const last = merged[merged.length - 1];
+      if (seg.startPercent <= last.endPercent) {
+        last.endPercent = Math.max(last.endPercent, seg.endPercent);
+      } else {
+        merged.push({ startPercent: seg.startPercent, endPercent: seg.endPercent });
+      }
+    }
+  }
+
+  const stops: string[] = [];
+  let curr = 0;
+
+  for (let i = 0; i < merged.length; i++) {
+    const { startPercent, endPercent } = merged[i];
+    if (startPercent > curr) {
+      stops.push(`${bgLight} ${curr.toFixed(1)}%`);
+      stops.push(`${bgLight} ${startPercent.toFixed(1)}%`);
+    }
+    stops.push(`${bgBlackout} ${startPercent.toFixed(1)}%`);
+    stops.push(`${bgBlackout} ${endPercent.toFixed(1)}%`);
+    curr = endPercent;
+  }
+
+  if (curr < 100) {
+    const tailColor = isOngoing ? bgOngoing : bgLight;
+    stops.push(`${tailColor} ${curr.toFixed(1)}%`);
+    stops.push(`${tailColor} 100%`);
+  }
+
+  return `linear-gradient(to right, ${stops.join(', ')})`;
 }

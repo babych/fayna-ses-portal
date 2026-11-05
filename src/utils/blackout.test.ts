@@ -117,4 +117,19 @@ describe('Blackout analytics utilities', () => {
     expect(stats[14].level).toBe('full');
     expect(stats[14].minutes).toBe(57);
   });
+
+  it('buildHourlyGradient creates exact sub-hour position gradient with green on left and right', async () => {
+    const { buildHourlyGradient } = await import('./blackout');
+    // Outage in the middle: minute 15 to 45 (25% to 75%)
+    const segments = [
+      { startMinute: 15, endMinute: 45, startPercent: 25.0, endPercent: 75.0 }
+    ];
+    const grad = buildHourlyGradient(segments, false, 50);
+    expect(grad).toContain('#DCFCE7 0.0%');
+    expect(grad).toContain('#DCFCE7 25.0%');
+    expect(grad).toContain('#B91C1C 25.0%');
+    expect(grad).toContain('#B91C1C 75.0%');
+    expect(grad).toContain('#DCFCE7 75.0%');
+    expect(grad).toContain('#DCFCE7 100%');
+  });
 });

@@ -28,6 +28,8 @@ import {
   type PowerInterval,
   type HourlyBlackoutLevel,
   type HourlyBlackoutStat,
+  type OutageSegment,
+  buildHourlyGradient,
 } from '@/utils/blackout';
 
 ChartJS.register(
@@ -416,6 +418,20 @@ const dayBlackoutData = computed(() => {
   const lastTs = timestamps.length > 0 ? timestamps[timestamps.length - 1] : Math.floor(Date.now() / 1000);
   const currentTelemetryHour = isHistoryDay.value ? 24 : new Date(lastTs * 1000).getHours();
 
+  // Determine reference day base
+  const refDateStr = isHistoryDay.value ? selectedDate.value : undefined;
+  let dayBase: Date;
+  if (refDateStr) {
+    const parts = refDateStr.split('-').map(Number);
+    dayBase = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0);
+  } else if (timestamps.length > 0) {
+    const firstD = new Date(timestamps[0] * 1000);
+    dayBase = new Date(firstD.getFullYear(), firstD.getMonth(), firstD.getDate(), 0, 0, 0, 0);
+  } else {
+    const now = new Date();
+    dayBase = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+  }
+
   // Hourly stats with exact percentage of outage and detailed tooltip
   const hourlyStats: HourlyBlackoutStat[] = hourlyMinutes.map((m, h) => {
     if (h > currentTelemetryHour) {
@@ -472,6 +488,32 @@ const dayBlackoutData = computed(() => {
       tooltipText = `${h}:00–${h + 1}:00`;
     }
 
+    // Calculate exact within-hour segments for precise sub-hour gradient positioning
+    const hourStartMs = dayBase.getTime() + h * 3600 * 1000;
+    const hourEndMs = hourStartMs + 3600 * 1000;
+    const segments: OutageSegment[] = [];
+
+    for (const it of matchingIntervals) {
+      const itStartMs = it.start.getTime();
+      const itEndMs = it.end.getTime();
+      const overlapStartMs = Math.max(itStartMs, hourStartMs);
+      const overlapEndMs = Math.min(itEndMs, hourEndMs);
+      if (overlapEndMs > overlapStartMs) {
+        const startMin = (overlapStartMs - hourStartMs) / 60000;
+        const endMin = (overlapEndMs - hourStartMs) / 60000;
+        segments.push({
+          startMinute: Math.round(startMin),
+          endMinute: Math.round(endMin),
+          startPercent: Math.max(0, Math.min(100, (startMin / 60) * 100)),
+          endPercent: Math.max(0, Math.min(100, (endMin / 60) * 100)),
+        });
+      }
+    }
+
+    const gradientStyle = level === 'partial' 
+      ? buildHourlyGradient(segments, isOngoingInThisHour, percent) 
+      : undefined;
+
     return {
       level,
       minutes: m,
@@ -480,6 +522,8 @@ const dayBlackoutData = computed(() => {
       tooltipText,
       matchingOutage: matchingIntervals[0],
       matchingPower: matchingPower[0],
+      segments,
+      gradientStyle,
     };
   });
 
@@ -1469,9 +1513,7 @@ const selectedDayMetrics = computed(() => {
                   'bg-slate-100/70 text-slate-400 border-dashed border-slate-200 font-medium': dayBlackoutData.hourlyStats[hour - 1].level === 'future',
                 }"
                 :style="dayBlackoutData.hourlyStats[hour - 1].level === 'partial' ? {
-                  background: dayBlackoutData.hourlyStats[hour - 1].isOngoing
-                    ? `linear-gradient(to right, #B91C1C 0%, #B91C1C ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 100%)`
-                    : `linear-gradient(to right, #B91C1C 0%, #B91C1C ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 100%)`
+                  background: dayBlackoutData.hourlyStats[hour - 1].gradientStyle || buildHourlyGradient(dayBlackoutData.hourlyStats[hour - 1].segments, dayBlackoutData.hourlyStats[hour - 1].isOngoing, dayBlackoutData.hourlyStats[hour - 1].percent)
                 } : dayBlackoutData.hourlyStats[hour - 1].level === 'full' ? {
                   background: '#B91C1C'
                 } : {}"
