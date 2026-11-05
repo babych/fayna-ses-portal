@@ -1628,13 +1628,13 @@ const selectedDayMetrics = computed(() => {
 
               <!-- Matrix Grid: Days (rows) x 24 Hours (cols) -->
               <div class="overflow-x-auto pb-4 pt-1 px-2">
-                <div class="min-w-[580px] pr-2">
+                <div class="w-fit min-w-full flex flex-col items-center sm:items-start pr-2">
                   <!-- Hour Headers 00 to 23 -->
-                  <div class="flex items-center text-[9px] font-bold text-slate-400 mb-1 pl-7">
+                  <div class="flex items-center text-[9px] font-bold text-slate-400 mb-1 pl-7 gap-0.5 sm:gap-1">
                     <div 
                       v-for="h in 24" 
                       :key="h" 
-                      class="flex-1 text-center"
+                      class="w-3.5 sm:w-4 text-center shrink-0"
                     >
                       <span v-if="(h - 1) % 4 === 0">{{ (h - 1).toString().padStart(2, '0') }}</span>
                       <span v-else class="text-slate-300">·</span>
@@ -1656,7 +1656,7 @@ const selectedDayMetrics = computed(() => {
 
                       <!-- 24 hourly dots/cells -->
                       <div 
-                        class="flex-1 flex items-center gap-0.5"
+                        class="flex items-center gap-0.5 sm:gap-1"
                         @mouseleave="hoveredMatrixCell = null"
                       >
                         <button
@@ -1665,17 +1665,17 @@ const selectedDayMetrics = computed(() => {
                           @mouseenter="hoveredMatrixCell = cell"
                           @click="handleMatrixCellClick(cell)"
                           type="button"
-                          class="flex-1 h-3.5 sm:h-4 rounded-[3px] select-none focus:outline-none relative"
+                          class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[3px] aspect-square shrink-0 select-none focus:outline-none relative"
                           :class="{
                             'bg-nordic-green-500 hover:brightness-110': cell.status === 'on',
-                            'bg-nordic-terracotta-500 hover:brightness-110': cell.status === 'off',
+                            'bg-nordic-terracotta-700 hover:brightness-110': cell.status === 'off',
                             'bg-nordic-ochre-500 hover:brightness-110': cell.status === 'partial',
                             'bg-slate-200/60 hover:bg-slate-300/80': cell.status === 'nodata',
                             'ring-2 ring-slate-900 ring-offset-1 z-10': selectedMatrixEvent && selectedMatrixEvent.day === cell.day && selectedMatrixEvent.hour === cell.hour,
                             'z-50': hoveredMatrixCell && hoveredMatrixCell.day === cell.day && hoveredMatrixCell.hour === cell.hour
                           }"
                           :style="cell.status === 'partial' ? {
-                            background: `linear-gradient(to top, #EF4444 0%, #EF4444 ${cell.percent}%, #22C55E ${cell.percent}%, #22C55E 100%)`
+                            background: `linear-gradient(to top, #B91C1C 0%, #B91C1C ${cell.percent}%, #22C55E ${cell.percent}%, #22C55E 100%)`
                           } : {}"
                         >
                           <!-- Floating Tooltip on Hover: smart 2D alignment (never clips container edge & never covers hovered cell) -->
@@ -1717,7 +1717,7 @@ const selectedDayMetrics = computed(() => {
                   <span 
                     class="w-3 h-3 rounded-full shrink-0"
                     :class="{
-                      'bg-nordic-terracotta-500': selectedMatrixEvent.type === 'off',
+                      'bg-nordic-terracotta-700': selectedMatrixEvent.type === 'off',
                       'bg-nordic-green-600': selectedMatrixEvent.type === 'on',
                       'bg-nordic-ochre-500': selectedMatrixEvent.type === 'partial',
                       'bg-slate-300': selectedMatrixEvent.type === 'nodata',
@@ -1762,7 +1762,7 @@ const selectedDayMetrics = computed(() => {
                   <span>{{ t('history.matrixLegendPartial') }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-[2px] bg-nordic-terracotta-500"></span>
+                  <span class="w-2.5 h-2.5 rounded-[2px] bg-nordic-terracotta-700"></span>
                   <span>{{ t('history.matrixLegendOff') }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
