@@ -313,7 +313,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       const targetScope = body.scope || 'all';
       const title = body.title || '⚡ Файна Таун: Статус живлення';
       const message = body.body || 'Оновлення стану електропостачання комплексу.';
-      const tag = body.tag || 'fayna-grid-status';
+      const tag = body.tag || 'faynagridstatus';
 
       const vapidPublic = env.VAPID_PUBLIC_KEY;
       const vapidPrivate = env.VAPID_PRIVATE_KEY;
