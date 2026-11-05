@@ -924,7 +924,7 @@ const handleModalDirectInstall = async () => {
                     {{ st.batteryPower > 0 ? `-${st.batteryPower}` : Math.abs(st.batteryPower) }} {{ t('wUnit') }}
                   </span>
                 </td>
-                <td class="py-3 px-4 font-mono font-bold" :class="st.gridPower <= 20 ? 'text-rose-600' : 'text-slate-700'">
+                <td class="py-3 px-4 font-mono font-bold" :class="st.gridPower <= 20 ? 'text-nordic-terracotta-700' : 'text-slate-700'">
                   {{ st.gridPower > 0 ? `${st.gridPower} ${t('wUnit')}` : `0 ${t('wUnit')}` }}
                 </td>
                 <td v-if="complexStats.totalSolarPowerW > 50" class="py-3 px-4 font-mono text-amber-600 font-bold">

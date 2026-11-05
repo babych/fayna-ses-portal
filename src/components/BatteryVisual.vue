@@ -19,13 +19,13 @@ const props = defineProps<{
 const batteryColor = computed(() => {
   if (props.level > 50) return 'from-emerald-500 to-emerald-400';
   if (props.level > 20) return 'from-amber-500 to-amber-400';
-  return 'from-rose-500 to-rose-400';
+  return 'from-nordic-terracotta-700 to-nordic-terracotta-500';
 });
 
 const batteryBorderColor = computed(() => {
   if (props.level > 50) return 'border-emerald-500/30 text-emerald-600';
   if (props.level > 20) return 'border-amber-500/30 text-amber-600';
-  return 'border-rose-500/30 text-rose-600';
+  return 'border-nordic-terracotta-700/30 text-nordic-terracotta-700';
 });
 
 const formattedPower = computed(() => {

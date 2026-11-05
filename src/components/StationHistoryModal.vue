@@ -510,14 +510,14 @@ const monthBlackoutChartData = computed(() => {
       {
         label: t('history.blackoutBatteryEnergy'),
         data: blackoutBatteryKwh,
-        backgroundColor: '#EF4444',
+        backgroundColor: '#B91C1C',
         borderRadius: 4,
         maxBarThickness: 24,
       },
       {
         label: t('history.chartMonthGrid'),
         data: gridArr,
-        backgroundColor: '#38bdf8',
+        backgroundColor: '#0284c7',
         borderRadius: 4,
         maxBarThickness: 24,
       },
@@ -1070,14 +1070,14 @@ const monthChartData = computed(() => {
     {
       label: t('history.chartMonthGrid'),
       data: gridArr,
-      backgroundColor: '#38bdf8',
+      backgroundColor: '#0284c7',
       borderRadius: 4,
       maxBarThickness: 24,
     },
     {
       label: t('history.totalMonthBattery'),
       data: batteryArr,
-      backgroundColor: '#EF4444',
+      backgroundColor: '#B91C1C',
       borderRadius: 4,
       maxBarThickness: 24,
     },
@@ -1470,10 +1470,10 @@ const selectedDayMetrics = computed(() => {
                 }"
                 :style="dayBlackoutData.hourlyStats[hour - 1].level === 'partial' ? {
                   background: dayBlackoutData.hourlyStats[hour - 1].isOngoing
-                    ? `linear-gradient(to top, #EF4444 0%, #EF4444 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 100%)`
-                    : `linear-gradient(to top, #EF4444 0%, #EF4444 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 100%)`
+                    ? `linear-gradient(to top, #B91C1C 0%, #B91C1C ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #f1f5f9 100%)`
+                    : `linear-gradient(to top, #B91C1C 0%, #B91C1C ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 ${dayBlackoutData.hourlyStats[hour - 1].percent}%, #DCFCE7 100%)`
                 } : dayBlackoutData.hourlyStats[hour - 1].level === 'full' ? {
-                  background: '#EF4444'
+                  background: '#B91C1C'
                 } : {}"
               >
                 <!-- CSS Hover Popup for instant feedback on hover -->
@@ -1504,7 +1504,7 @@ const selectedDayMetrics = computed(() => {
                 <span 
                   class="w-2.5 h-2.5 rounded-full shrink-0"
                   :class="{
-                    'bg-nordic-terracotta-500': activeDailyHourDetail.stat.level === 'full',
+                    'bg-nordic-terracotta-700': activeDailyHourDetail.stat.level === 'full',
                     'bg-nordic-ochre-500': activeDailyHourDetail.stat.level === 'partial',
                     'bg-nordic-green-600': activeDailyHourDetail.stat.level === 'none',
                     'bg-slate-300': activeDailyHourDetail.stat.level === 'future',
@@ -1528,11 +1528,11 @@ const selectedDayMetrics = computed(() => {
                 <span>{{ t('history.legendGrid') }}</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded bg-gradient-to-t from-nordic-terracotta-500 from-50% to-nordic-green-100 to-50% border border-nordic-ochre-300"></span>
+                <span class="w-3 h-3 rounded bg-gradient-to-t from-nordic-terracotta-700 from-50% to-nordic-green-100 to-50% border border-nordic-ochre-300"></span>
                 <span class="font-bold text-nordic-ochre-700">{{ t('history.exactOutageFill') }}</span>
               </div>
               <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded bg-nordic-terracotta-500 border border-nordic-terracotta-600"></span>
+                <span class="w-3 h-3 rounded bg-nordic-terracotta-700 border border-nordic-terracotta-800"></span>
                 <span>{{ t('history.legendBatt') }}</span>
               </div>
               <div class="flex items-center gap-1.5">
@@ -1556,7 +1556,7 @@ const selectedDayMetrics = computed(() => {
                 class="p-3.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between text-xs shadow-xs"
               >
                 <div class="flex items-center gap-3">
-                  <span class="w-2.5 h-2.5 rounded-full bg-nordic-terracotta-500"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-nordic-terracotta-700"></span>
                   <div>
                     <div class="flex items-center gap-2">
                       <span class="font-extrabold text-slate-900 text-sm">
@@ -1667,15 +1667,15 @@ const selectedDayMetrics = computed(() => {
                           type="button"
                           class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[3px] aspect-square shrink-0 select-none focus:outline-none relative"
                           :class="{
-                            'bg-nordic-green-500 hover:brightness-110': cell.status === 'on',
+                            'bg-[#16A34A] hover:brightness-110': cell.status === 'on',
                             'bg-nordic-terracotta-700 hover:brightness-110': cell.status === 'off',
-                            'bg-nordic-ochre-500 hover:brightness-110': cell.status === 'partial',
+                            'bg-[#D97706] hover:brightness-110': cell.status === 'partial',
                             'bg-slate-200/60 hover:bg-slate-300/80': cell.status === 'nodata',
                             'ring-2 ring-slate-900 ring-offset-1 z-10': selectedMatrixEvent && selectedMatrixEvent.day === cell.day && selectedMatrixEvent.hour === cell.hour,
                             'z-50': hoveredMatrixCell && hoveredMatrixCell.day === cell.day && hoveredMatrixCell.hour === cell.hour
                           }"
                           :style="cell.status === 'partial' ? {
-                            background: `linear-gradient(to top, #B91C1C 0%, #B91C1C ${cell.percent}%, #22C55E ${cell.percent}%, #22C55E 100%)`
+                            background: `linear-gradient(to top, #B91C1C 0%, #B91C1C ${cell.percent}%, #16A34A ${cell.percent}%, #16A34A 100%)`
                           } : {}"
                         >
                           <!-- Floating Tooltip on Hover: smart 2D alignment (never clips container edge & never covers hovered cell) -->
@@ -1718,8 +1718,8 @@ const selectedDayMetrics = computed(() => {
                     class="w-3 h-3 rounded-full shrink-0"
                     :class="{
                       'bg-nordic-terracotta-700': selectedMatrixEvent.type === 'off',
-                      'bg-nordic-green-600': selectedMatrixEvent.type === 'on',
-                      'bg-nordic-ochre-500': selectedMatrixEvent.type === 'partial',
+                      'bg-[#16A34A]': selectedMatrixEvent.type === 'on',
+                      'bg-[#D97706]': selectedMatrixEvent.type === 'partial',
                       'bg-slate-300': selectedMatrixEvent.type === 'nodata',
                     }"
                   ></span>
@@ -1754,11 +1754,11 @@ const selectedDayMetrics = computed(() => {
               <!-- Matrix Legend -->
               <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-500 mt-3 pt-3 border-t border-slate-200/80 gap-2">
                 <div class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-[2px] bg-nordic-green-600"></span>
+                  <span class="w-2.5 h-2.5 rounded-[2px] bg-[#16A34A]"></span>
                   <span>{{ t('history.matrixLegendOn') }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-[2px] bg-nordic-ochre-500"></span>
+                  <span class="w-2.5 h-2.5 rounded-[2px] bg-[#D97706]"></span>
                   <span>{{ t('history.matrixLegendPartial') }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
