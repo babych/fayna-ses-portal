@@ -496,10 +496,17 @@ const handleBeforeInstallPrompt = (e: Event) => {
 };
 
 onMounted(async () => {
-  // Clear any pending App Badge upon user visiting the portal
-  if (typeof navigator !== 'undefined' && 'clearAppBadge' in navigator) {
-    (navigator as any).clearAppBadge().catch(() => {});
-  }
+  // Clear any pending App Badge upon user visiting the portal or returning from background
+  const clearBadgeSafely = () => {
+    if (typeof navigator !== 'undefined' && 'clearAppBadge' in navigator) {
+      (navigator as any).clearAppBadge().catch(() => {});
+    }
+  };
+  clearBadgeSafely();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') clearBadgeSafely();
+  });
+  window.addEventListener('focus', clearBadgeSafely);
 
   if (typeof window !== 'undefined') {
     isStandalone.value = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
@@ -620,15 +627,9 @@ watchEffect(() => {
     }
   }
 
-  // PWA App Badge Synchronization
-  if (typeof navigator !== 'undefined') {
-    if ('setAppBadge' in navigator && 'clearAppBadge' in navigator) {
-      if (blackoutCount > 0) {
-        (navigator as any).setAppBadge(blackoutCount).catch(() => {});
-      } else {
-        (navigator as any).clearAppBadge().catch(() => {});
-      }
-    }
+  // PWA App Badge: Always clear badge on user visiting the active web app
+  if (typeof navigator !== 'undefined' && 'clearAppBadge' in navigator) {
+    (navigator as any).clearAppBadge().catch(() => {});
   }
 
   complexStats.value = {

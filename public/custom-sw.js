@@ -42,6 +42,9 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  if ('clearAppBadge' in self.navigator) {
+    self.navigator.clearAppBadge().catch(() => {});
+  }
   const targetUrl = event.notification.data?.url || '/';
   const fullTargetUrl = new URL(targetUrl, self.location.origin).href;
 
