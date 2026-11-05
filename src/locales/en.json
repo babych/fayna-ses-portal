@@ -128,7 +128,8 @@
     "totalMonthBlackout": "Energy during blackouts",
     "tooltipOutage": "Outage: {time}",
     "tooltipWithPower": "Power was on: {time}",
-    "tooltipNoOutage": "Power on for the whole hour (60 min)"
+    "tooltipNoOutage": "Power on for the whole hour (60 min)",
+    "blackoutsMonthTitle": "Monthly Outage Analytics & History"
   },
   "addModal": {
     "title": "Add New Station",

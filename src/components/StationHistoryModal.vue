@@ -306,13 +306,18 @@ const loadData = async () => {
   if (!selectedDate.value) initSelectedDates();
 
   if (mode.value === 'blackouts' && blackoutSubTab.value === 'month') {
-    if (!monthHistory.value) {
-      await loadMonthData(selectedMonth.value);
-    }
+    await loadMonthData(selectedMonth.value);
   } else if (isHistoryDay.value && !selectedDayFeed.value) {
     await loadDayData(selectedDate.value);
   }
 };
+
+watch(() => props.station, (newStation) => {
+  if (newStation && props.isOpen) {
+    loadData();
+  }
+});
+
 
 watch(() => props.initialTab, (newTab) => {
   if (newTab) {
@@ -915,6 +920,7 @@ const handleMatrixCellClick = (cell: MonthGridHourCell) => {
 watch([selectedMonth, blackoutSubTab, mode], ([newMonth, subTab, currentMode]) => {
   if (currentMode === 'blackouts' && subTab === 'month') {
     loadMonthGridFeeds(newMonth);
+    loadMonthData(newMonth);
   }
 }, { immediate: true });
 
@@ -1383,7 +1389,7 @@ const selectedDayMetrics = computed(() => {
       <!-- CONTENT: 2. Blackout Analytics -->
       <div v-else-if="mode === 'blackouts'" class="py-5 space-y-6 flex-1">
         <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-          <span class="text-sm font-extrabold text-slate-900">{{ t('history.blackoutsTitle') }}</span>
+          <span class="text-sm font-extrabold text-slate-900">{{ blackoutSubTab === 'month' ? t('history.blackoutsMonthTitle') : t('history.blackoutsTitle') }}</span>
 
           <div class="flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200">
             <button
@@ -1610,8 +1616,8 @@ const selectedDayMetrics = computed(() => {
               </div>
 
               <!-- Matrix Grid: Days (rows) x 24 Hours (cols) -->
-              <div class="overflow-x-auto pb-2 -mx-1 px-1">
-                <div class="min-w-[580px]">
+              <div class="overflow-x-auto pb-4 pt-1 px-2">
+                <div class="min-w-[580px] pr-2">
                   <!-- Hour Headers 00 to 23 -->
                   <div class="flex items-center text-[9px] font-bold text-slate-400 mb-1 pl-7">
                     <div 
@@ -1666,22 +1672,22 @@ const selectedDayMetrics = computed(() => {
                             v-if="hoveredMatrixCell && hoveredMatrixCell.day === cell.day && hoveredMatrixCell.hour === cell.hour && cell.tooltipText && cell.status !== 'nodata'"
                             class="pointer-events-none absolute z-[100] whitespace-nowrap flex flex-col"
                             :class="[
-                              row.day <= 3 ? 'top-full mt-2' : 'bottom-full mb-2',
-                              cell.hour >= 18 ? 'right-0 items-end' : (cell.hour <= 5 ? 'left-0 items-start' : 'left-1/2 -translate-x-1/2 items-center')
+                              row.day <= 2 ? 'top-full mt-3' : 'bottom-full mb-3',
+                              cell.hour >= 17 ? 'right-0 items-end' : (cell.hour <= 6 ? 'left-0 items-start' : 'left-1/2 -translate-x-1/2 items-center')
                             ]"
                           >
                             <div 
-                              v-if="row.day <= 3" 
+                              v-if="row.day <= 2" 
                               class="w-2 h-2 bg-slate-900 rotate-45 -mb-1 border-l border-t border-slate-700/80 z-10"
-                              :class="cell.hour >= 18 ? 'mr-2' : (cell.hour <= 5 ? 'ml-2' : '')"
+                              :class="cell.hour >= 17 ? 'mr-3' : (cell.hour <= 6 ? 'ml-3' : '')"
                             ></div>
                             <div class="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white text-[11px] font-semibold shadow-2xl border border-slate-700/80">
                               {{ cell.tooltipText }}
                             </div>
                             <div 
-                              v-if="row.day > 3" 
+                              v-if="row.day > 2" 
                               class="w-2 h-2 bg-slate-900 rotate-45 -mt-1 border-r border-b border-slate-700/80 z-10"
-                              :class="cell.hour >= 18 ? 'mr-2' : (cell.hour <= 5 ? 'ml-2' : '')"
+                              :class="cell.hour >= 17 ? 'mr-3' : (cell.hour <= 6 ? 'ml-3' : '')"
                             ></div>
                           </div>
                         </button>

@@ -128,7 +128,8 @@
     "totalMonthBlackout": "Енергія під час блекаутів",
     "tooltipOutage": "Без світла: {time}",
     "tooltipWithPower": "Світло було: {time}",
-    "tooltipNoOutage": "Світло було всю годину (60 хв)"
+    "tooltipNoOutage": "Світло було всю годину (60 хв)",
+    "blackoutsMonthTitle": "Історія відключень світла за місяць"
   },
   "addModal": {
     "title": "Додати нову станцію",
