@@ -114,13 +114,23 @@ html[data-theme="graphite"] .bg-white {
   background-color: #1f232b !important;
 }
 
+/* Header & Modal Header Dark Graphite */
 html[data-theme="graphite"] .bg-white\/95 {
-  background-color: rgba(31, 35, 43, 0.95) !important;
+  background-color: rgba(22, 25, 31, 0.95) !important;
+}
+
+html[data-theme="graphite"] .bg-slate-50\/70,
+html[data-theme="graphite"] .bg-slate-50\/50 {
+  background-color: #1a1e26 !important;
 }
 
 /* Elevated secondary surfaces (subtle input, inner pill badges, tables) */
 html[data-theme="graphite"] .bg-slate-100 {
   background-color: #272c36 !important;
+}
+
+html[data-theme="graphite"] .bg-slate-200 {
+  background-color: #323845 !important;
 }
 
 html[data-theme="graphite"] .hover\:bg-slate-50:hover,
@@ -129,44 +139,74 @@ html[data-theme="graphite"] .hover\:bg-slate-200:hover {
   background-color: #323845 !important;
 }
 
-/* Typography contrast */
-html[data-theme="graphite"] .text-slate-900 { color: #f0f2f5 !important; }
-html[data-theme="graphite"] .text-slate-800 { color: #e2e6eb !important; }
-html[data-theme="graphite"] .text-slate-700 { color: #c5cbd5 !important; }
-html[data-theme="graphite"] .text-slate-600 { color: #9aa3b0 !important; }
-html[data-theme="graphite"] .text-slate-500 { color: #828c9b !important; }
-html[data-theme="graphite"] .text-slate-400 { color: #636c7a !important; }
+/* High-Contrast Typography */
+html[data-theme="graphite"] .text-slate-900 { color: #ffffff !important; }
+html[data-theme="graphite"] .text-slate-800 { color: #f0f2f5 !important; }
+html[data-theme="graphite"] .text-slate-700 { color: #e2e6eb !important; }
+html[data-theme="graphite"] .text-slate-600 { color: #cbd5e1 !important; }
+html[data-theme="graphite"] .text-slate-500 { color: #94a3b8 !important; }
+html[data-theme="graphite"] .text-slate-400 { color: #788596 !important; }
+html[data-theme="graphite"] .text-slate-300 { color: #475569 !important; }
 
-/* Borders & Dividers */
+/* Subtle muted borders */
 html[data-theme="graphite"] .border-slate-300 { border-color: #4a5363 !important; }
 html[data-theme="graphite"] .border-slate-200,
 html[data-theme="graphite"] .border-slate-200\/80,
 html[data-theme="graphite"] .border-slate-200\/90 {
-  border-color: #3b4352 !important;
+  border-color: #333a48 !important;
 }
-html[data-theme="graphite"] .border-slate-100 { border-color: #2c3340 !important; }
-html[data-theme="graphite"] .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: #2c3340 !important; }
-html[data-theme="graphite"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: #3b4352 !important; }
+html[data-theme="graphite"] .border-slate-100 { border-color: #272c36 !important; }
+html[data-theme="graphite"] .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: #272c36 !important; }
+html[data-theme="graphite"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: #333a48 !important; }
 
-/* Operating (Green) accent remapping */
+/* Status accents with crisp visibility */
+html[data-theme="graphite"] .text-emerald-500 { color: #2ecc71 !important; }
 html[data-theme="graphite"] .text-emerald-600 { color: #27ae60 !important; }
 html[data-theme="graphite"] .text-emerald-700 { color: #219653 !important; }
 html[data-theme="graphite"] .bg-emerald-500 { background-color: #27ae60 !important; }
 html[data-theme="graphite"] .bg-emerald-600 { background-color: #219653 !important; }
 html[data-theme="graphite"] .border-emerald-500 { border-color: #27ae60 !important; }
-html[data-theme="graphite"] .bg-emerald-50 { background-color: rgba(39, 174, 96, 0.12) !important; }
+html[data-theme="graphite"] .bg-emerald-50,
+html[data-theme="graphite"] .bg-emerald-50\/50 {
+  background-color: rgba(39, 174, 96, 0.15) !important;
+}
 
-/* Damaged / Stale (Amber / Orange) accent remapping */
+html[data-theme="graphite"] .text-amber-500 { color: #f39c12 !important; }
 html[data-theme="graphite"] .text-amber-600 { color: #e67e22 !important; }
 html[data-theme="graphite"] .text-amber-700 { color: #d35400 !important; }
 html[data-theme="graphite"] .bg-amber-500 { background-color: #e67e22 !important; }
-html[data-theme="graphite"] .bg-amber-50 { background-color: rgba(230, 126, 34, 0.12) !important; }
+html[data-theme="graphite"] .bg-amber-50 { background-color: rgba(230, 126, 34, 0.15) !important; }
 
-/* Critical / Danger (Red / Rose) accent remapping */
 html[data-theme="graphite"] .text-rose-500 { color: #e74c3c !important; }
 html[data-theme="graphite"] .text-rose-600 { color: #c0392b !important; }
 html[data-theme="graphite"] .bg-rose-500 { background-color: #e74c3c !important; }
-html[data-theme="graphite"] .bg-rose-50 { background-color: rgba(231, 76, 60, 0.12) !important; }
+html[data-theme="graphite"] .bg-rose-50 { background-color: rgba(231, 76, 60, 0.15) !important; }
+
+/* Nordic accents in modal header (Activity icon & badge) */
+html[data-theme="graphite"] .bg-nordic-terracotta-50 {
+  background-color: rgba(231, 76, 60, 0.15) !important;
+}
+html[data-theme="graphite"] .border-nordic-terracotta-200 {
+  border-color: rgba(231, 76, 60, 0.35) !important;
+}
+html[data-theme="graphite"] .text-nordic-terracotta-600 {
+  color: #e74c3c !important;
+}
+
+/* Battery Visual and detail cards in graphite */
+html[data-theme="graphite"] .bg-slate-300 {
+  background-color: #4a5363 !important;
+}
+html[data-theme="graphite"] .bg-slate-400 {
+  background-color: #636c7a !important;
+}
+
+/* Inset inputs / search bar */
+html[data-theme="graphite"] input[type="text"],
+html[data-theme="graphite"] input[type="date"] {
+  background-color: #1a1e26 !important;
+  color: #f0f2f5 !important;
+}
 
 /* Scrollbar styling in graphite mode */
 html[data-theme="graphite"] ::-webkit-scrollbar-thumb {

@@ -45,26 +45,8 @@ const toggleLanguage = () => {
   }
 };
 
-const isGraphiteTheme = ref(false);
-if (typeof localStorage !== 'undefined') {
-  isGraphiteTheme.value = localStorage.getItem('fayna_theme') === 'graphite';
-  if (typeof document !== 'undefined' && isGraphiteTheme.value) {
-    document.documentElement.setAttribute('data-theme', 'graphite');
-  }
-}
-
-const toggleGraphiteTheme = () => {
-  isGraphiteTheme.value = !isGraphiteTheme.value;
-  if (typeof document !== 'undefined') {
-    if (isGraphiteTheme.value) {
-      document.documentElement.setAttribute('data-theme', 'graphite');
-      localStorage.setItem('fayna_theme', 'graphite');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-      localStorage.removeItem('fayna_theme');
-    }
-  }
-};
+import { useTheme } from '@/composables/useTheme';
+const { isGraphite: isGraphiteTheme, toggleGraphiteTheme } = useTheme();
 
 const stationsMeta = ref<StationMetadata[]>([...PRECONFIGURED_STATIONS]);
 // Pre-render static skeleton cards immediately on mount (Zero-CLS)

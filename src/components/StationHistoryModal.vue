@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTheme } from '@/composables/useTheme';
 import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { X, AlertCircle, AlertTriangle, CheckCircle, Clock, ChevronLeft, ChevronRight, Calendar } from 'lucide-vue-next';
@@ -42,6 +43,7 @@ ChartJS.register(
 );
 
 const { t } = useI18n();
+const { isGraphite } = useTheme();
 const { getStationName, getStationDesc } = useStationI18n();
 
 const props = withDefaults(defineProps<{
@@ -995,7 +997,7 @@ const dayChartData = computed(() => {
   };
 });
 
-const dayChartOptions = {
+const dayChartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   animation: false as const,
@@ -1005,38 +1007,41 @@ const dayChartOptions = {
     legend: {
       position: 'top' as const,
       labels: {
-        color: '#1e293b',
+        color: isGraphite.value ? '#f0f2f5' : '#1e293b',
         font: { family: 'Plus Jakarta Sans', weight: 'bold' as const, size: 12 },
         usePointStyle: true,
       },
     },
     tooltip: {
-      backgroundColor: '#ffffff',
-      titleColor: '#0f172a',
-      bodyColor: '#334155',
-      borderColor: '#e2e8f0',
+      backgroundColor: isGraphite.value ? '#1f232b' : '#ffffff',
+      titleColor: isGraphite.value ? '#f0f2f5' : '#0f172a',
+      bodyColor: isGraphite.value ? '#c5cbd5' : '#334155',
+      borderColor: isGraphite.value ? '#3b4352' : '#e2e8f0',
       borderWidth: 1,
       padding: 10,
     },
   },
   scales: {
-    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
+    x: { 
+      grid: { color: isGraphite.value ? 'rgba(59, 67, 82, 0.4)' : '#f1f5f9' }, 
+      ticks: { color: isGraphite.value ? '#9aa3b0' : '#64748b' } 
+    },
     ySoc: {
       type: 'linear' as const,
       position: 'left' as const,
       min: 0,
       max: 100,
-      ticks: { color: '#10b981' },
-      grid: { color: '#f1f5f9' },
+      ticks: { color: isGraphite.value ? '#27ae60' : '#10b981' },
+      grid: { color: isGraphite.value ? 'rgba(59, 67, 82, 0.4)' : '#f1f5f9' },
     },
     yPower: {
       type: 'linear' as const,
       position: 'right' as const,
-      ticks: { color: '#8b5cf6' },
+      ticks: { color: isGraphite.value ? '#a78bfa' : '#8b5cf6' },
       grid: { drawOnChartArea: false },
     },
   },
-};
+}));
 
 // Monthly chart
 const monthChartData = computed(() => {
@@ -1126,18 +1131,24 @@ const monthTotals = computed(() => {
   };
 });
 
-const monthChartOptions = {
+const monthChartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove', 'touchend'] as any,
   plugins: {
-    legend: { labels: { color: '#1e293b', font: { family: 'Plus Jakarta Sans', weight: 'bold' as const } } },
+    legend: { labels: { color: isGraphite.value ? '#f0f2f5' : '#1e293b', font: { family: 'Plus Jakarta Sans', weight: 'bold' as const } } },
   },
   scales: {
-    x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
-    y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
+    x: { 
+      grid: { color: isGraphite.value ? 'rgba(59, 67, 82, 0.4)' : '#f1f5f9' }, 
+      ticks: { color: isGraphite.value ? '#9aa3b0' : '#64748b' } 
+    },
+    y: { 
+      grid: { color: isGraphite.value ? 'rgba(59, 67, 82, 0.4)' : '#f1f5f9' }, 
+      ticks: { color: isGraphite.value ? '#9aa3b0' : '#64748b' } 
+    },
   },
-};
+}));
 
 // Metrics for the selected day (live today vs historical day)
 const selectedDayMetrics = computed(() => {

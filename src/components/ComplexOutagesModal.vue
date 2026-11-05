@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTheme } from '@/composables/useTheme';
 import { ref, computed, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { X, ChevronRight, Activity, ChevronLeft, Calendar } from 'lucide-vue-next';
@@ -43,6 +44,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const { isGraphite } = useTheme();
 const { getStationName } = useStationI18n();
 
 // Set of hidden station IDs controlled by legend toggles
@@ -341,19 +343,19 @@ const chartOptions = computed(() => ({
     x: {
       grid: {
         display: true,
-        color: 'rgba(226, 232, 240, 0.6)',
+        color: isGraphite.value ? 'rgba(59, 67, 82, 0.4)' : 'rgba(226, 232, 240, 0.6)',
       },
       ticks: {
         maxTicksLimit: 12,
         font: { size: 10 },
-        color: '#64748b',
+        color: isGraphite.value ? '#9aa3b0' : '#64748b',
       },
     },
     y: {
       display: true,
       grid: {
         display: true,
-        color: 'rgba(241, 245, 249, 0.8)',
+        color: isGraphite.value ? 'rgba(59, 67, 82, 0.4)' : 'rgba(241, 245, 249, 0.8)',
       },
       ticks: {
         display: false,
