@@ -206,6 +206,10 @@ export async function checkAndDispatchOutages(env: Env): Promise<{
   // 3. Craft notification payload
   let title = '⚡ Файна Таун: Енергопостачання';
   let body = '';
+  // Option 1 Standard:
+  // - Full Outage (all stations off) & Full Power Restored (0 stations off) -> audible / urgent (silent: false)
+  // - Partial Outage (e.g. 1-4 stations off) -> silent / discreet notification without beep/vibrate (silent: true)
+  const isPartialOutage = currentBlackoutCount > 0 && currentBlackoutCount < activeStations.length;
 
   if (currentBlackoutCount === 0) {
     title = '🟢 Світло є у всіх будинках!';
@@ -249,6 +253,7 @@ export async function checkAndDispatchOutages(env: Env): Promise<{
     sub: { id: string; endpoint: string; p256dh: string; auth: string; scope?: string };
     title: string;
     body: string;
+    silent: boolean;
     url: string;
   }
 
@@ -279,6 +284,7 @@ export async function checkAndDispatchOutages(env: Env): Promise<{
       sub,
       title: recipientTitle,
       body: recipientBody,
+      silent: scope === 'all' ? isPartialOutage : false,
       url: scope !== 'all' ? `/?station=${scope}` : '/',
     });
   }
@@ -297,6 +303,7 @@ export async function checkAndDispatchOutages(env: Env): Promise<{
             body: item.body,
             icon: '/icon-192.png',
             tag: 'fayna-grid-status',
+            silent: item.silent,
             data: { url: item.url },
           },
           {

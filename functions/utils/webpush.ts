@@ -12,6 +12,7 @@ export interface PushMessagePayload {
   icon?: string;
   badge?: string;
   tag?: string;
+  silent?: boolean;
   data?: Record<string, any>;
 }
 
@@ -54,7 +55,7 @@ export async function sendWebPush(
         data: messageJson,
         options: {
           ttl: 86400,
-          urgency: 'high',
+          urgency: payload.silent ? 'low' : 'high',
           // Omit HTTP Topic header on web.push.apple.com to prevent BadWebPushTopic 400 rejections;
           // Apple APNs uses 'apns-collapse-id' header instead for message collapsing.
           topic: (payload.tag && !endpoint.includes('push.apple.com')) ? payload.tag.replace(/[^a-zA-Z0-9]/g, '').slice(0, 32) : undefined,
@@ -70,8 +71,13 @@ export async function sendWebPush(
     // Apple APNs Web Push collapsing:
     // If endpoint is on web.push.apple.com, provide apns-collapse-id to collapse/replace
     // consecutive notifications under the same group on lock screen and Notification Center
-    if (endpoint.includes('push.apple.com') && payload.tag) {
-      requestHeaders['apns-collapse-id'] = payload.tag.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+    if (endpoint.includes('push.apple.com')) {
+      if (payload.tag) {
+        requestHeaders['apns-collapse-id'] = payload.tag.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+      }
+      if (payload.silent) {
+        requestHeaders['apns-priority'] = '5';
+      }
     }
 
     const response = await fetch(endpoint, {

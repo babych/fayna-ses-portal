@@ -308,6 +308,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         title?: string;
         body?: string;
         tag?: string;
+        silent?: boolean;
       };
 
       const targetScope = body.scope || 'all';
@@ -356,6 +357,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
                 icon: '/icon-192.png',
                 badge: '/favicon.svg',
                 tag,
+                silent: typeof body.silent === 'boolean' ? body.silent : false,
                 data: { url: '/' },
               },
               {
