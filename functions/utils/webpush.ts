@@ -55,8 +55,9 @@ export async function sendWebPush(
         options: {
           ttl: 86400,
           urgency: 'high',
-          // Omit topic or keep base64url to prevent BadWebPushTopic on Apple APNs
-          topic: payload.tag ? payload.tag.replace(/[^a-zA-Z0-9]/g, '').slice(0, 32) : undefined,
+          // Omit HTTP Topic header on web.push.apple.com to prevent BadWebPushTopic 400 rejections;
+          // Apple APNs uses 'apns-collapse-id' header instead for message collapsing.
+          topic: (payload.tag && !endpoint.includes('push.apple.com')) ? payload.tag.replace(/[^a-zA-Z0-9]/g, '').slice(0, 32) : undefined,
         },
       },
       sub,
