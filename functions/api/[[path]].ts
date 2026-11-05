@@ -533,13 +533,13 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     const limit = Math.min(Number(url.searchParams.get('limit')) || 2000, 10000);
 
     try {
-      const rows = await env.DB.prepare(
+      const rows = await env.DB.prepare(`
         SELECT timestamp, soc, batt_w, grid_w, load_w, pv_w 
          FROM station_telemetry 
          WHERE station_id = ?1 AND timestamp >= ?2 AND timestamp <= ?3 
          ORDER BY timestamp ASC 
          LIMIT ?4
-      ).bind(stationId, fromTs, toTs, limit).all<{
+      `).bind(stationId, fromTs, toTs, limit).all<{
         timestamp: number;
         soc: number | null;
         batt_w: number | null;
