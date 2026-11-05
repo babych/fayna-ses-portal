@@ -464,24 +464,39 @@ const dayBlackoutData = computed(() => {
     });
 
     let tooltipText = '';
-    if (matchingIntervals.length > 0 && level !== 'none') {
-      // Overlapping continuous blackout interval(s)
+    if (level === 'partial') {
+      // Combine overlapping blackout and power intervals in chronological order
+      const allEvents: { start: Date; str: string }[] = [];
+      for (const it of matchingIntervals) {
+        const startStr = formatTimeRange(it.start);
+        const endStr = it.isOngoing ? t('history.ongoing') : formatTimeRange(it.end);
+        const durStr = formatDuration(it.durationMinutes);
+        allEvents.push({ start: it.start, str: `🔴 ${startStr} — ${endStr} (${durStr})` });
+      }
+      for (const it of matchingPower) {
+        const startStr = formatTimeRange(it.start);
+        const endStr = it.isOngoing ? t('history.ongoing') : formatTimeRange(it.end);
+        const durStr = formatDuration(it.durationMinutes);
+        allEvents.push({ start: it.start, str: `🟢 ${startStr} — ${endStr} (${durStr})` });
+      }
+      allEvents.sort((a, b) => a.start.getTime() - b.start.getTime());
+      tooltipText = allEvents.map(e => e.str).join('  |  ');
+    } else if (matchingIntervals.length > 0 && level === 'full') {
       const parts = matchingIntervals.map(it => {
         const startStr = formatTimeRange(it.start);
         const endStr = it.isOngoing ? t('history.ongoing') : formatTimeRange(it.end);
         const durStr = formatDuration(it.durationMinutes);
         return `🔴 ${startStr} — ${endStr} (${durStr})`;
       });
-      tooltipText = parts.join(' | ');
+      tooltipText = parts.join('  |  ');
     } else if (matchingPower.length > 0) {
-      // Overlapping continuous light interval(s)
       const parts = matchingPower.map(it => {
         const startStr = formatTimeRange(it.start);
         const endStr = it.isOngoing ? t('history.ongoing') : formatTimeRange(it.end);
         const durStr = formatDuration(it.durationMinutes);
         return `🟢 ${startStr} — ${endStr} (${durStr})`;
       });
-      tooltipText = parts.join(' | ');
+      tooltipText = parts.join('  |  ');
     } else if (m === 0) {
       tooltipText = `${h}:00–${h + 1}:00: ${t('history.tooltipNoOutage')}`;
     } else {
