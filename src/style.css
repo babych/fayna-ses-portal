@@ -69,18 +69,30 @@ body {
   transition: opacity 350ms ease-in-out;
 }
 
-/* --- Graphite Theme (Colors only: text, borders, accents, status indicators) --- */
+/* --- Graphite Theme (Original infographic dark graphite palette) --- */
 html[data-theme="graphite"] {
+  color-scheme: dark;
+
+  /* Deep slate-graphite surface tokens */
+  --bg-canvas: #16191f;
+  --bg-surface-card: #1f232b;
+  --bg-surface-elevated: #272c36;
+  --bg-surface-hover: #323845;
+
+  /* Typography tokens */
   --color-slate-900: #f0f2f5;
   --color-slate-800: #e2e6eb;
   --color-slate-700: #c5cbd5;
   --color-slate-600: #9aa3b0;
   --color-slate-500: #828c9b;
   --color-slate-400: #636c7a;
+  
+  /* Border tokens */
   --color-slate-300: #4a5363;
   --color-slate-200: #3b4352;
   --color-slate-100: #2c3340;
 
+  /* Functional status accents */
   --status-operating: #27ae60;
   --status-operating-hover: #219653;
   --status-damaged: #e67e22;
@@ -90,6 +102,34 @@ html[data-theme="graphite"] {
   --status-hydro: #3498db;
 }
 
+/* Backgrounds: Base canvas, body and container */
+html[data-theme="graphite"],
+html[data-theme="graphite"] body,
+html[data-theme="graphite"] .bg-slate-50 {
+  background-color: #16191f !important;
+}
+
+/* Card surfaces, modals, popovers & header/footer */
+html[data-theme="graphite"] .bg-white {
+  background-color: #1f232b !important;
+}
+
+html[data-theme="graphite"] .bg-white\/95 {
+  background-color: rgba(31, 35, 43, 0.95) !important;
+}
+
+/* Elevated secondary surfaces (subtle input, inner pill badges, tables) */
+html[data-theme="graphite"] .bg-slate-100 {
+  background-color: #272c36 !important;
+}
+
+html[data-theme="graphite"] .hover\:bg-slate-50:hover,
+html[data-theme="graphite"] .hover\:bg-slate-100:hover,
+html[data-theme="graphite"] .hover\:bg-slate-200:hover {
+  background-color: #323845 !important;
+}
+
+/* Typography contrast */
 html[data-theme="graphite"] .text-slate-900 { color: #f0f2f5 !important; }
 html[data-theme="graphite"] .text-slate-800 { color: #e2e6eb !important; }
 html[data-theme="graphite"] .text-slate-700 { color: #c5cbd5 !important; }
@@ -97,22 +137,41 @@ html[data-theme="graphite"] .text-slate-600 { color: #9aa3b0 !important; }
 html[data-theme="graphite"] .text-slate-500 { color: #828c9b !important; }
 html[data-theme="graphite"] .text-slate-400 { color: #636c7a !important; }
 
+/* Borders & Dividers */
 html[data-theme="graphite"] .border-slate-300 { border-color: #4a5363 !important; }
-html[data-theme="graphite"] .border-slate-200 { border-color: #3b4352 !important; }
+html[data-theme="graphite"] .border-slate-200,
+html[data-theme="graphite"] .border-slate-200\/80,
+html[data-theme="graphite"] .border-slate-200\/90 {
+  border-color: #3b4352 !important;
+}
 html[data-theme="graphite"] .border-slate-100 { border-color: #2c3340 !important; }
 html[data-theme="graphite"] .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: #2c3340 !important; }
 html[data-theme="graphite"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) { border-color: #3b4352 !important; }
 
+/* Operating (Green) accent remapping */
 html[data-theme="graphite"] .text-emerald-600 { color: #27ae60 !important; }
 html[data-theme="graphite"] .text-emerald-700 { color: #219653 !important; }
 html[data-theme="graphite"] .bg-emerald-500 { background-color: #27ae60 !important; }
 html[data-theme="graphite"] .bg-emerald-600 { background-color: #219653 !important; }
 html[data-theme="graphite"] .border-emerald-500 { border-color: #27ae60 !important; }
+html[data-theme="graphite"] .bg-emerald-50 { background-color: rgba(39, 174, 96, 0.12) !important; }
 
+/* Damaged / Stale (Amber / Orange) accent remapping */
 html[data-theme="graphite"] .text-amber-600 { color: #e67e22 !important; }
 html[data-theme="graphite"] .text-amber-700 { color: #d35400 !important; }
 html[data-theme="graphite"] .bg-amber-500 { background-color: #e67e22 !important; }
+html[data-theme="graphite"] .bg-amber-50 { background-color: rgba(230, 126, 34, 0.12) !important; }
 
+/* Critical / Danger (Red / Rose) accent remapping */
 html[data-theme="graphite"] .text-rose-500 { color: #e74c3c !important; }
 html[data-theme="graphite"] .text-rose-600 { color: #c0392b !important; }
 html[data-theme="graphite"] .bg-rose-500 { background-color: #e74c3c !important; }
+html[data-theme="graphite"] .bg-rose-50 { background-color: rgba(231, 76, 60, 0.12) !important; }
+
+/* Scrollbar styling in graphite mode */
+html[data-theme="graphite"] ::-webkit-scrollbar-thumb {
+  background: #3b4352;
+}
+html[data-theme="graphite"] ::-webkit-scrollbar-thumb:hover {
+  background: #4a5363;
+}
