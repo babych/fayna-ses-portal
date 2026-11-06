@@ -470,7 +470,27 @@ const dayBlackoutData = computed(() => {
           stitchStartIdx = pIdx;
           pIdx--;
         } else {
-          break;
+          // Check if light restoration was <= 15 min
+          const lightEnd = pT[pIdx];
+          let lightStart = pT[pIdx];
+          let tempIdx = pIdx;
+          while (tempIdx >= 0) {
+            const tgv = pG[tempIdx] ?? 0;
+            const tlv = pL[tempIdx] ?? 0;
+            const tbv = pB[tempIdx] ?? 0;
+            if (!(Math.abs(tgv) <= 20 && (tlv > 20 || tbv > 50))) {
+              lightStart = pT[tempIdx];
+              tempIdx--;
+            } else {
+              break;
+            }
+          }
+          const lightDurMin = Math.floor((lightEnd - lightStart) / 60);
+          if (lightDurMin <= 15 && tempIdx >= 0) {
+            pIdx = tempIdx;
+          } else {
+            break;
+          }
         }
       }
 

@@ -94,14 +94,43 @@ export function computePowerIntervals(
   return intervals;
 }
 
+/**
+ * Bridges consecutive outage intervals when light restoration between them is <= maxGapMinutes (e.g. 15 min)
+ */
+export function bridgeOutageIntervals(
+  intervals: BlackoutInterval[],
+  maxGapMinutes: number = 15
+): BlackoutInterval[] {
+  if (!intervals.length) return [];
+  const bridged: BlackoutInterval[] = [];
+  let cur = { ...intervals[0] };
+
+  for (let i = 1; i < intervals.length; i++) {
+    const next = intervals[i];
+    const gapMinutes = Math.round((next.start.getTime() - cur.end.getTime()) / 60000);
+    if (gapMinutes <= maxGapMinutes) {
+      cur.end = next.end;
+      cur.durationMinutes = Math.max(1, Math.round((cur.end.getTime() - cur.start.getTime()) / 60000));
+      if (next.isOngoing) cur.isOngoing = true;
+    } else {
+      bridged.push(cur);
+      cur = { ...next };
+    }
+  }
+  bridged.push(cur);
+  return bridged;
+}
+
 export function computeBlackoutIntervals(
   timestamps: number[],
   grid: number[],
   load: number[],
   isHistoryDay: boolean = false,
-  batt: number[] = []
+  batt: number[] = [],
+  maxGapMinutes: number = 15
 ): BlackoutInterval[] {
-  return computePowerIntervals(timestamps, grid, load, isHistoryDay, batt, 'outage');
+  const raw = computePowerIntervals(timestamps, grid, load, isHistoryDay, batt, 'outage');
+  return maxGapMinutes > 0 ? bridgeOutageIntervals(raw, maxGapMinutes) : raw;
 }
 
 export function computeHourlyBlackoutMinutes(

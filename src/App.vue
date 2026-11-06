@@ -621,7 +621,27 @@ const updateComplexBlackoutDuration = async () => {
         startTs = t[idx];
         idx--;
       } else {
-        break;
+        // Check if this light period is a brief restoration (<= 15 min)
+        const lightEnd = t[idx];
+        let lightStart = t[idx];
+        let tempIdx = idx;
+        while (tempIdx >= 0) {
+          const tgv = g[tempIdx] ?? 0;
+          const tlv = l[tempIdx] ?? 0;
+          const tbv = b[tempIdx] ?? 0;
+          if (!(Math.abs(tgv) <= 20 && (tlv > 20 || tbv > 50))) {
+            lightStart = t[tempIdx];
+            tempIdx--;
+          } else {
+            break;
+          }
+        }
+        const lightDurMin = Math.floor((lightEnd - lightStart) / 60);
+        if (lightDurMin <= 15 && tempIdx >= 0) {
+          idx = tempIdx;
+        } else {
+          break;
+        }
       }
     }
 
@@ -647,7 +667,26 @@ const updateComplexBlackoutDuration = async () => {
             startTs = ty[yIdx];
             yIdx--;
           } else {
-            break;
+            const yLightEnd = ty[yIdx];
+            let yLightStart = ty[yIdx];
+            let tempYIdx = yIdx;
+            while (tempYIdx >= 0) {
+              const tygv = gy[tempYIdx] ?? 0;
+              const tylv = ly[tempYIdx] ?? 0;
+              const tybv = by[tempYIdx] ?? 0;
+              if (!(Math.abs(tygv) <= 20 && (tylv > 20 || tybv > 50))) {
+                yLightStart = ty[tempYIdx];
+                tempYIdx--;
+              } else {
+                break;
+              }
+            }
+            const yLightDurMin = Math.floor((yLightEnd - yLightStart) / 60);
+            if (yLightDurMin <= 15 && tempYIdx >= 0) {
+              yIdx = tempYIdx;
+            } else {
+              break;
+            }
           }
         }
       }
