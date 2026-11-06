@@ -1761,12 +1761,6 @@ const selectedDayMetrics = computed(() => {
                         {{ selectedMatrixEvent.type === 'off' ? t('history.matrixContinuousOutage') : (selectedMatrixEvent.type === 'on' ? t('history.matrixContinuousPower') : t('history.exactOutageFill')) }}:
                         {{ selectedMatrixEvent.durationStr }}
                       </span>
-                      <span 
-                        v-if="selectedMatrixEvent.crossesMidnight" 
-                        class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200"
-                      >
-                        ⚡ 24h+ Multi-day
-                      </span>
                     </div>
                     <span class="text-[11px] text-slate-500 font-semibold mt-0.5">
                       {{ selectedMatrixEvent.startStr }} → {{ selectedMatrixEvent.endStr }}
