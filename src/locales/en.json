@@ -198,6 +198,18 @@
     "dee052e69e8fa101de2f002f53a964e2": {
       "name": "HOA #6, Building 19, Entrance 1",
       "description": "Station serves all of building 19"
+    },
+    "8fd92183d607f5990c7e1dac509ec68a": {
+      "name": "HOA #3, Building 8, Entrance 5",
+      "description": "Station serves building 8, entrances 3-5"
+    },
+    "4f655c36051a572e646a09bd6dc67d66": {
+      "name": "HOA #3, Building 7, Entrance 8",
+      "description": "Station serves building 7, entrances 5-8"
+    },
+    "7cfb64881a9fa84997bf7e1bdb8e5071": {
+      "name": "HOA #7, Building 24, Entrance 5",
+      "description": "Station serves building 24, entrances 4-5"
     }
   },
   "loadModeBattery": "Powered by Battery",

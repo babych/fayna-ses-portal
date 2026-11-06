@@ -17,6 +17,9 @@ const STATIONS = [
   { id: 'e64791f0a8f89a5400db11c0f8c82c57', name: 'ОСББ №6, Буд. 18, Під. 8 (Ліфт)' },
   { id: 'ac15fb3d463174465df3bedcb30be9cc', name: 'ОСББ №7, Буд. 24, Під. 2' },
   { id: 'dee052e69e8fa101de2f002f53a964e2', name: 'ОСББ №6, Буд. 19, Під. 1' },
+  { id: '8fd92183d607f5990c7e1dac509ec68a', name: 'ОСББ №3, Буд. 8, Під. 5' },
+  { id: '4f655c36051a572e646a09bd6dc67d66', name: 'ОСББ №3, Буд. 7, Під. 8' },
+  { id: '7cfb64881a9fa84997bf7e1bdb8e5071', name: 'ОСББ №7, Буд. 24, Під. 5' },
 ];
 
 interface StationState {

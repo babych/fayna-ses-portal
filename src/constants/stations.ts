@@ -59,6 +59,30 @@ export const PRECONFIGURED_STATIONS: StationMetadata[] = [
     pvKw: 0,
     batteryKwh: 25,
   },
+  {
+    id: '8fd92183d607f5990c7e1dac509ec68a',
+    name: 'HOA #3, Building 8, Entrance 5',
+    description: 'Station serves building 8, entrances 3-5',
+    inverterKw: 12,
+    pvKw: 5,
+    batteryKwh: 20,
+  },
+  {
+    id: '4f655c36051a572e646a09bd6dc67d66',
+    name: 'HOA #3, Building 7, Entrance 8',
+    description: 'Station serves building 7, entrances 5-8',
+    inverterKw: 12,
+    pvKw: 5,
+    batteryKwh: 25,
+  },
+  {
+    id: '7cfb64881a9fa84997bf7e1bdb8e5071',
+    name: 'HOA #7, Building 24, Entrance 5',
+    description: 'Station serves building 24, entrances 4-5',
+    inverterKw: 12,
+    pvKw: 0,
+    batteryKwh: 20,
+  },
 ];
 
 /**
