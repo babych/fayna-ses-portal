@@ -36,7 +36,11 @@ const preloadStationHistoryModal = () => {
   loadStationHistoryModal().catch(() => {});
 };
 const PushNotificationModal = defineAsyncComponent(() => import('@/components/PushNotificationModal.vue'));
-const ComplexOutagesModal = defineAsyncComponent(() => import('@/components/ComplexOutagesModal.vue'));
+const loadComplexOutagesModal = () => import('@/components/ComplexOutagesModal.vue');
+const ComplexOutagesModal = defineAsyncComponent(loadComplexOutagesModal);
+const preloadComplexOutagesModal = () => {
+  loadComplexOutagesModal().catch(() => {});
+};
 
 const { t, locale } = useI18n();
 const { getStationName, getStationDesc } = useStationI18n();
@@ -174,7 +178,7 @@ const backToComplexOutages = () => {
 };
 
 const openHistory = (station: StationTelemetry, tab: 'telemetry' | 'day' | 'blackouts' | 'month' = 'telemetry') => {
-  preloadStationHistoryModal();
+  preloadStationHistoryModal(); preloadComplexOutagesModal();
   requestAnimationFrame(() => {
     selectedStationForHistory.value = station;
     historyModalTab.value = tab;
@@ -222,8 +226,11 @@ const closeAddModal = () => {
 };
 
 const openComplexOutages = () => {
-  isComplexOutagesModalOpen.value = true;
-  updateUrlState();
+  preloadComplexOutagesModal();
+  requestAnimationFrame(() => {
+    isComplexOutagesModalOpen.value = true;
+    updateUrlState();
+  });
 };
 
 const closeComplexOutages = () => {
@@ -568,9 +575,9 @@ onMounted(async () => {
   // Background idle preloading of StationHistoryModal chunk without competing with initial render
   if (typeof window !== 'undefined') {
     if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(() => preloadStationHistoryModal(), { timeout: 3000 });
+      (window as any).requestIdleCallback(() => { preloadStationHistoryModal(); preloadComplexOutagesModal(); }, { timeout: 3000 });
     } else {
-      setTimeout(() => preloadStationHistoryModal(), 1500);
+      setTimeout(() => { preloadStationHistoryModal(); preloadComplexOutagesModal(); }, 1500);
     }
   }
 });
