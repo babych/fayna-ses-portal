@@ -86,6 +86,9 @@ const formatTimeAgo = (seconds: number) => {
             <span v-if="station.batteryKwh > 0" class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 tabular-nums shrink-0">
               🔋 {{ station.batteryKwh }} {{ t('kwhUnit') }}
             </span>
+            <span v-if="station.pvKw > 0" class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+              ☀️ {{ t('history.pvPower') }}: {{ station.pvKw }} {{ t('kwUnit') }}
+            </span>
           </div>
         </div>
 
