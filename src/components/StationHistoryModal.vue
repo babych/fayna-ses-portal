@@ -1737,7 +1737,7 @@ const selectedDayMetrics = computed(() => {
                   'ring-2 ring-slate-900 ring-inset z-20': activeDailyHourDetail && activeDailyHourDetail.hour === hour - 1,
                   'text-white font-bold': dayBlackoutData.hourlyStats[hour - 1].level === 'full',
                   'text-slate-900 font-bold': dayBlackoutData.hourlyStats[hour - 1].level === 'partial',
-                  'bg-nordic-green-100 text-nordic-green-800 font-semibold': dayBlackoutData.hourlyStats[hour - 1].level === 'none',
+                  'bg-[#16A34A] text-white font-bold': dayBlackoutData.hourlyStats[hour - 1].level === 'none',
                   'bg-slate-100/80 text-slate-400 font-medium': dayBlackoutData.hourlyStats[hour - 1].level === 'future',
                 }"
                 :style="dayBlackoutData.hourlyStats[hour - 1].level === 'partial' ? {
@@ -1794,7 +1794,7 @@ const selectedDayMetrics = computed(() => {
             <!-- Legend with dynamic percentage gradient -->
             <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-500 mt-3 pt-3 border-t border-slate-200/80 gap-2">
               <div class="flex items-center gap-1.5">
-                <span class="w-3 h-3 rounded bg-nordic-green-100 border border-nordic-green-300"></span>
+                <span class="w-3 h-3 rounded bg-[#16A34A] border border-[#15803D]"></span>
                 <span>{{ t('history.legendGrid') }}</span>
               </div>
               <div class="flex items-center gap-1.5">

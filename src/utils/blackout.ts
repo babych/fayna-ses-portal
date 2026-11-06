@@ -219,10 +219,10 @@ export function buildHourlyGradient(
   if (!segments || segments.length === 0) {
     return isOngoing
       ? 'linear-gradient(to right, #B91C1C 0%, #B91C1C ' + percent + '%, #f1f5f9 ' + percent + '%, #f1f5f9 100%)'
-      : 'linear-gradient(to right, #B91C1C 0%, #B91C1C ' + percent + '%, #DCFCE7 ' + percent + '%, #DCFCE7 100%)';
+      : 'linear-gradient(to right, #B91C1C 0%, #B91C1C ' + percent + '%, #16A34A ' + percent + '%, #16A34A 100%)';
   }
 
-  const bgLight = '#DCFCE7';
+  const bgLight = '#16A34A';
   const bgOngoing = '#f1f5f9';
   const bgBlackout = '#B91C1C';
 

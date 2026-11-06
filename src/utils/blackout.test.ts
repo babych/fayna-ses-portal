@@ -125,12 +125,12 @@ describe('Blackout analytics utilities', () => {
       { startMinute: 15, endMinute: 45, startPercent: 25.0, endPercent: 75.0 }
     ];
     const grad = buildHourlyGradient(segments, false, 50);
-    expect(grad).toContain('#DCFCE7 0.0%');
-    expect(grad).toContain('#DCFCE7 25.0%');
+    expect(grad).toContain('#16A34A 0.0%');
+    expect(grad).toContain('#16A34A 25.0%');
     expect(grad).toContain('#B91C1C 25.0%');
     expect(grad).toContain('#B91C1C 75.0%');
-    expect(grad).toContain('#DCFCE7 75.0%');
-    expect(grad).toContain('#DCFCE7 100%');
+    expect(grad).toContain('#16A34A 75.0%');
+    expect(grad).toContain('#16A34A 100%');
   });
   it('bridges outages when power returns for <= 30 minutes', () => {
     // 300s sample step (5 min).
