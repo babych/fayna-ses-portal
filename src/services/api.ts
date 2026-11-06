@@ -201,6 +201,16 @@ export function buildStationTelemetry(
   const ageSeconds = updatedStamp ? Math.max(0, Math.floor((nowStamp - updatedStamp) / 1000)) : 999999;
   const isStale = ageSeconds > 1800;
 
+  // Infer battery drained to 0 / BMS shutdown:
+  // When telemetry is stale during a blackout (grid = 0) and the station was actively discharging
+  // with low SOC (<=15%), or elapsed stale time exceeds the calculated remaining autonomy time.
+  const isElevator = /elevator|ліфт/i.test(meta.name) || /elevator|ліфт/i.test(meta.description || "");
+  const isDrained = isStale && Math.abs(gridPower) <= 20 && (
+    (batteryPower > 50 && batteryLevel <= 15) ||
+    (batteryPower > 50 && estimatedAutonomyHours !== null && (ageSeconds / 3600) >= estimatedAutonomyHours * 0.8) ||
+    (isElevator && batteryLevel <= 20)
+  );
+
   return {
     id: meta.id,
     name: meta.name,
@@ -230,6 +240,7 @@ export function buildStationTelemetry(
     inverterLoadPercent,
 
     isStale,
+    isDrained,
     ageSeconds,
 
     history: {

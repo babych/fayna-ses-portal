@@ -110,6 +110,7 @@ const formatTimeAgo = (seconds: number) => {
           :remaining-kwh="station.remainingEnergyKwh"
           :autonomy-hours="station.estimatedAutonomyHours"
           :is-initial-loading="isInitialLoading"
+          :is-drained="station.isDrained"
         />
       </div>
 
@@ -122,6 +123,7 @@ const formatTimeAgo = (seconds: number) => {
         :battery-state="station.batteryState"
         :power-source="station.powerSource"
         :is-stale="station.isStale"
+        :is-drained="station.isDrained"
         :is-initial-loading="isInitialLoading"
       />
     </div>
@@ -132,10 +134,10 @@ const formatTimeAgo = (seconds: number) => {
         <div class="flex items-center gap-1.5 min-w-0 flex-1 mr-2 truncate">
           <span 
             class="w-2 h-2 rounded-full shrink-0"
-            :class="isInitialLoading ? 'bg-slate-300' : station.isStale ? 'bg-amber-500' : 'bg-emerald-500'"
+            :class="isInitialLoading ? 'bg-slate-300' : station.isDrained ? 'bg-rose-500' : station.isStale ? 'bg-amber-500' : 'bg-emerald-500'"
           ></span>
-          <span :class="!isInitialLoading && station.isStale ? 'text-amber-600 font-bold' : 'font-medium'" class="shrink-0">
-            {{ isInitialLoading ? '—' : station.isStale ? t('stale') : t('online') }}
+          <span :class="!isInitialLoading && station.isDrained ? 'text-rose-600 font-bold' : !isInitialLoading && station.isStale ? 'text-amber-600 font-bold' : 'font-medium'" class="shrink-0">
+            {{ isInitialLoading ? '—' : station.isDrained ? t('drainedTag') : station.isStale ? t('stale') : t('online') }}
           </span>
           <span class="text-slate-300 shrink-0">•</span>
           <span class="text-slate-400 tabular-nums shrink-0">{{ isInitialLoading ? '—' : formatTimeAgo(station.ageSeconds) }}</span>
@@ -144,7 +146,7 @@ const formatTimeAgo = (seconds: number) => {
             class="text-[11px] text-amber-700 font-medium truncate ml-1"
             :title="isElevator && isDeadDuringBlackout ? t('staleElevatorBlackout') : t('staleBanner', { time: formatTimeAgo(station.ageSeconds) })"
           >
-            ({{ isElevator && isDeadDuringBlackout ? t('staleElevatorBlackout') : t('stale') }})
+            ({{ station.isDrained ? t('staleElevatorBlackout') : (isElevator && isDeadDuringBlackout ? t('staleElevatorBlackout') : t('stale')) }})
           </span>
         </div>
 

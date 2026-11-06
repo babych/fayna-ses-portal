@@ -729,13 +729,15 @@ watchEffect(() => {
   let onlineCount = 0;
 
   for (const st of list) {
-    if (!st.isStale) onlineCount++;
+    if (!st.isStale && !st.isDrained) onlineCount++;
     totalCapacity += st.batteryKwh;
-    currentStored += st.remainingEnergyKwh;
-    totalSolar += st.solarPower;
-    totalGrid += st.gridPower;
-    totalBatt += st.batteryPower;
-    totalBuilding += st.buildingPower;
+    if (!st.isDrained) {
+      currentStored += st.remainingEnergyKwh;
+      totalSolar += st.solarPower;
+      totalGrid += st.gridPower;
+      totalBatt += st.batteryPower;
+      totalBuilding += st.buildingPower;
+    }
   }
 
   const avgLevel = totalCapacity > 0 ? (currentStored / totalCapacity) * 100 : 0;
@@ -1077,9 +1079,9 @@ const handleModalDirectInstall = async () => {
                 <td class="py-3 px-4">
                   <span 
                     class="px-2 py-0.5 rounded-full text-[10px] font-bold"
-                    :class="st.isStale ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'"
+                    :class="st.isDrained ? 'bg-rose-100 text-rose-800' : st.isStale ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'"
                   >
-                    {{ st.isStale ? t('stale') : t('online') }}
+                    {{ st.isDrained ? t('drainedTag') : st.isStale ? t('stale') : t('online') }}
                   </span>
                 </td>
                 <td class="py-3 px-4 text-right">

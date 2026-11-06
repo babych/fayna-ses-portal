@@ -14,6 +14,7 @@ defineProps<{
   batteryState: BatteryState;
   powerSource: PowerSource;
   isStale?: boolean;
+  isDrained?: boolean;
   isInitialLoading?: boolean;
 }>();
 
@@ -139,6 +140,13 @@ const formatW = (watts: number) => {
       >
         <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
         —
+      </span>
+      <span 
+        v-else-if="isDrained"
+        class="inline-flex items-center gap-1 font-extrabold uppercase tracking-wide text-rose-700"
+      >
+        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+        {{ t('sourceDrained') }}
       </span>
       <span 
         v-else-if="isStale"

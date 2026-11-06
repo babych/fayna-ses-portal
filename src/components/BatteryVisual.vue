@@ -14,6 +14,7 @@ const props = defineProps<{
   remainingKwh: number;
   autonomyHours: number | null;
   isInitialLoading?: boolean;
+  isDrained?: boolean;
 }>();
 
 const batteryColor = computed(() => {
@@ -61,7 +62,7 @@ const formattedPower = computed(() => {
           <div 
             class="w-full bg-gradient-to-t transition-all duration-1000 ease-out relative"
             :class="batteryColor"
-            :style="{ height: `${Math.max(5, Math.min(100, level))}%` }"
+            :style="{ height: `${isDrained ? 2 : Math.max(5, Math.min(100, level))}%` }"
           >
             <div 
               v-if="state === 'charging' || state === 'discharging'"
@@ -70,12 +71,14 @@ const formattedPower = computed(() => {
           </div>
 
           <div class="absolute inset-0 flex flex-col items-center justify-center z-10 select-none">
-            <span class="h-[32px] leading-none flex items-center justify-center text-2xl font-black tracking-tight text-slate-900 drop-shadow-sm tabular-nums">
+            <span class="h-[32px] leading-none flex items-center justify-center text-2xl font-black tracking-tight drop-shadow-sm tabular-nums" :class="isDrained ? 'text-rose-600' : 'text-slate-900'">
               <template v-if="isInitialLoading">—</template>
+              <template v-else-if="isDrained">0%</template>
               <template v-else>{{ Math.round(level) }}%</template>
             </span>
-            <span class="h-[16px] leading-none flex items-center justify-center text-[11px] font-bold text-slate-600 tabular-nums mt-0.5">
+            <span class="h-[16px] leading-none flex items-center justify-center text-[11px] font-bold tabular-nums mt-0.5" :class="isDrained ? 'text-rose-600' : 'text-slate-600'">
               <template v-if="isInitialLoading">— / {{ capacityKwh }} {{ t('kwhUnit') }}</template>
+              <template v-else-if="isDrained">0.0 / {{ capacityKwh }} {{ t('kwhUnit') }}</template>
               <template v-else>{{ remainingKwh.toFixed(1) }} / {{ capacityKwh }} {{ t('kwhUnit') }}</template>
             </span>
           </div>
@@ -86,29 +89,40 @@ const formattedPower = computed(() => {
     <!-- Mode -->
     <div class="mt-3 h-[28px] min-w-[155px] whitespace-nowrap flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border transition-all"
       :class="{
-        'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm': state === 'charging',
-        'bg-amber-50 text-amber-700 border-amber-200 shadow-sm': state === 'discharging',
-        'bg-slate-100 text-slate-600 border-slate-200': state === 'idle',
+        'bg-rose-50 text-rose-700 border-rose-200 shadow-sm': isDrained,
+        'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm': !isDrained && state === 'charging',
+        'bg-amber-50 text-amber-700 border-amber-200 shadow-sm': !isDrained && state === 'discharging',
+        'bg-slate-100 text-slate-600 border-slate-200': !isDrained && state === 'idle',
       }"
     >
-      <ArrowDown v-if="state === 'charging'" class="w-3.5 h-3.5 animate-bounce" />
-      <ArrowUp v-else-if="state === 'discharging'" class="w-3.5 h-3.5 animate-pulse" />
-      <Pause v-else class="w-3 h-3 text-slate-400" />
+      <template v-if="isDrained">
+        <Pause class="w-3.5 h-3.5 text-rose-500" />
+        <span class="tabular-nums">{{ t('drainedStatus') }}</span>
+      </template>
+      <template v-else>
+        <ArrowDown v-if="state === 'charging'" class="w-3.5 h-3.5 animate-bounce" />
+        <ArrowUp v-else-if="state === 'discharging'" class="w-3.5 h-3.5 animate-pulse" />
+        <Pause v-else class="w-3 h-3 text-slate-400" />
 
-      <span class="tabular-nums">
-        <template v-if="state === 'charging'">{{ t('charging') }} +{{ formattedPower }}</template>
-        <template v-else-if="state === 'discharging'">{{ t('discharging') }} -{{ formattedPower }}</template>
-        <template v-else>{{ t('idle') }}</template>
-      </span>
+        <span class="tabular-nums">
+          <template v-if="state === 'charging'">{{ t('charging') }} +{{ formattedPower }}</template>
+          <template v-else-if="state === 'discharging'">{{ t('discharging') }} -{{ formattedPower }}</template>
+          <template v-else>{{ t('idle') }}</template>
+        </span>
+      </template>
     </div>
 
     <!-- Autonomy forecast reserve slot (Zero-CLS: fixed h-[20px] and whitespace-nowrap prevents card height jumping) -->
     <div class="h-[20px] mt-1 flex items-center justify-center overflow-hidden">
       <div 
-        class="text-[11px] text-amber-600 font-bold tabular-nums whitespace-nowrap leading-none transition-opacity duration-300"
-        :class="autonomyHours !== null ? 'opacity-100' : 'opacity-0'"
+        class="text-[11px] font-bold tabular-nums whitespace-nowrap leading-none transition-opacity duration-300"
+        :class="[
+          isDrained ? 'text-rose-600 opacity-100' : 'text-amber-600',
+          !isDrained && autonomyHours !== null ? 'opacity-100' : '',
+          !isDrained && autonomyHours === null ? 'opacity-0' : ''
+        ]"
       >
-        {{ autonomyHours !== null ? t('hoursAutonomy', { hours: autonomyHours }) : '—' }}
+        {{ isDrained ? t('drainedAutonomy') : (autonomyHours !== null ? t('hoursAutonomy', { hours: autonomyHours }) : '—') }}
       </div>
     </div>
   </div>

@@ -235,5 +235,9 @@
     "hideLine": "Hide line",
     "backToTrends": "← Back to trends"
   },
-  "gridPartialBlackoutWithDuration": "Partial Outage ({duration})"
+  "gridPartialBlackoutWithDuration": "Partial Outage ({duration})",
+  "drainedStatus": "Drained (0%)",
+  "drainedTag": "Drained to 0%",
+  "drainedAutonomy": "Battery drained",
+  "sourceDrained": "Outage (Battery drained)"
 }

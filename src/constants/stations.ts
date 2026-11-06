@@ -88,6 +88,7 @@ export function createInitialStationTelemetries(stations: StationMetadata[] = PR
     inverterLoadPercent: 0,
 
     isStale: false,
+    isDrained: false,
     ageSeconds: 0,
 
     history: {

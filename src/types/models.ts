@@ -67,6 +67,7 @@ export interface StationTelemetry {
 
   // Telemetry freshness
   isStale: boolean;
+  isDrained?: boolean;
   ageSeconds: number;
 
   // Rolling 24h history for charts
