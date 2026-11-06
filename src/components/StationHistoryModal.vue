@@ -474,10 +474,17 @@ const dayBlackoutData = computed(() => {
   let effectiveBatt = batt;
 
   if (priorDayFeed.value && priorDayFeed.value.t && priorDayFeed.value.t.length && timestamps.length > 0) {
-    const firstG = grid[0] ?? 0;
-    const firstL = load[0] ?? 0;
-    const firstB = batt[0] ?? 0;
-    const dayStartedInBlackout = Math.abs(firstG) <= 20 && (firstL > 20 || firstB > 50);
+    // Check if the beginning of the day (first 6 samples / 30 min) has an active blackout
+    let dayStartedInBlackout = false;
+    for (let i = 0; i < Math.min(6, timestamps.length); i++) {
+      const fg = grid[i];
+      const fl = load[i];
+      const fb = batt ? batt[i] : 0;
+      if (fg !== null && Math.abs(fg ?? 0) <= 20 && ((fl ?? 0) > 20 || (fb ?? 0) > 50)) {
+        dayStartedInBlackout = true;
+        break;
+      }
+    }
 
     if (dayStartedInBlackout) {
       const pT = priorDayFeed.value.t;
@@ -511,7 +518,7 @@ const dayBlackoutData = computed(() => {
             }
           }
           const lightDurMin = Math.floor((lightEnd - lightStart) / 60);
-          if (lightDurMin <= 15 && tempIdx >= 0) {
+          if (lightDurMin <= 30) {
             pIdx = tempIdx;
           } else {
             break;

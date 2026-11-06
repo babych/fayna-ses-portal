@@ -637,7 +637,7 @@ const updateComplexBlackoutDuration = async () => {
           }
         }
         const lightDurMin = Math.floor((lightEnd - lightStart) / 60);
-        if (lightDurMin <= 15 && tempIdx >= 0) {
+        if (lightDurMin <= 30) {
           idx = tempIdx;
         } else {
           break;
@@ -682,7 +682,7 @@ const updateComplexBlackoutDuration = async () => {
               }
             }
             const yLightDurMin = Math.floor((yLightEnd - yLightStart) / 60);
-            if (yLightDurMin <= 15 && tempYIdx >= 0) {
+            if (yLightDurMin <= 30) {
               yIdx = tempYIdx;
             } else {
               break;

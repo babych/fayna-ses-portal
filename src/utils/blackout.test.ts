@@ -132,19 +132,19 @@ describe('Blackout analytics utilities', () => {
     expect(grad).toContain('#DCFCE7 75.0%');
     expect(grad).toContain('#DCFCE7 100%');
   });
-  it('bridges outages when power returns for <= 15 minutes', () => {
+  it('bridges outages when power returns for <= 30 minutes', () => {
     // 300s sample step (5 min).
     // Outage 1: t[1] to t[3] (10 min)
-    // Light for 5 min: t[3] to t[4] (5 min <= 15 min gap)
-    // Outage 2: t[4] to t[6] (10 min)
+    // Light for 20 min: t[3] to t[7] (20 min <= 30 min gap)
+    // Outage 2: t[7] to t[9] (10 min)
     const base = 1700000000;
-    const timestamps = [base, base + 300, base + 600, base + 900, base + 1200, base + 1500, base + 1800];
-    const grid = [2000, 0, 0, 2200, 0, 0, 2200];
-    const load = [1000, 1000, 1000, 1000, 1000, 1000, 1000];
+    const timestamps = [base, base + 300, base + 600, base + 900, base + 1200, base + 1500, base + 1800, base + 2100, base + 2400, base + 2700];
+    const grid = [2000, 0, 0, 2200, 2200, 2200, 2200, 0, 0, 2200];
+    const load = [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000];
 
-    const intervals = computeBlackoutIntervals(timestamps, grid, load, false, [], 15);
+    const intervals = computeBlackoutIntervals(timestamps, grid, load, false, [], 30);
     // Bridged into 1 single outage
     expect(intervals).toHaveLength(1);
-    expect(intervals[0].durationMinutes).toBe(25);
+    expect(intervals[0].durationMinutes).toBe(40);
   });
 });

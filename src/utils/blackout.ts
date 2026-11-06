@@ -99,7 +99,7 @@ export function computePowerIntervals(
  */
 export function bridgeOutageIntervals(
   intervals: BlackoutInterval[],
-  maxGapMinutes: number = 15
+  maxGapMinutes: number = 30
 ): BlackoutInterval[] {
   if (!intervals.length) return [];
   const bridged: BlackoutInterval[] = [];
@@ -127,7 +127,7 @@ export function computeBlackoutIntervals(
   load: number[],
   isHistoryDay: boolean = false,
   batt: number[] = [],
-  maxGapMinutes: number = 15
+  maxGapMinutes: number = 30
 ): BlackoutInterval[] {
   const raw = computePowerIntervals(timestamps, grid, load, isHistoryDay, batt, 'outage');
   return maxGapMinutes > 0 ? bridgeOutageIntervals(raw, maxGapMinutes) : raw;
