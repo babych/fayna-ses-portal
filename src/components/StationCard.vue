@@ -61,6 +61,7 @@ const formatTimeAgo = (seconds: number) => {
             <button
               type="button"
               @click="emit('show-history', station)"
+              @pointerenter="import('@/components/StationHistoryModal.vue').catch(() => {})"
               class="text-left group/title focus:outline-none"
               :title="t('analytics')"
             >
@@ -153,6 +154,7 @@ const formatTimeAgo = (seconds: number) => {
         <div class="flex items-center gap-3 shrink-0">
           <button
             @click="emit('show-history', station)"
+            @pointerenter="import('@/components/StationHistoryModal.vue').catch(() => {})"
             class="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 shrink-0"
           >
             {{ t('analytics') }} →

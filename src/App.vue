@@ -30,7 +30,11 @@ import StationCard from '@/components/StationCard.vue';
 // Lazy load all modals so their markup, validation and icons don't block initial page render
 const AddStationModal = defineAsyncComponent(() => import('@/components/AddStationModal.vue'));
 const PwaInstallModal = defineAsyncComponent(() => import('@/components/PwaInstallModal.vue'));
-const StationHistoryModal = defineAsyncComponent(() => import('@/components/StationHistoryModal.vue'));
+const loadStationHistoryModal = () => import('@/components/StationHistoryModal.vue');
+const StationHistoryModal = defineAsyncComponent(loadStationHistoryModal);
+const preloadStationHistoryModal = () => {
+  loadStationHistoryModal().catch(() => {});
+};
 const PushNotificationModal = defineAsyncComponent(() => import('@/components/PushNotificationModal.vue'));
 const ComplexOutagesModal = defineAsyncComponent(() => import('@/components/ComplexOutagesModal.vue'));
 
@@ -170,10 +174,13 @@ const backToComplexOutages = () => {
 };
 
 const openHistory = (station: StationTelemetry, tab: 'telemetry' | 'day' | 'blackouts' | 'month' = 'telemetry') => {
-  selectedStationForHistory.value = station;
-  historyModalTab.value = tab;
-  isHistoryModalOpen.value = true;
-  updateUrlState();
+  preloadStationHistoryModal();
+  requestAnimationFrame(() => {
+    selectedStationForHistory.value = station;
+    historyModalTab.value = tab;
+    isHistoryModalOpen.value = true;
+    updateUrlState();
+  });
 };
 
 const closeHistory = () => {
@@ -557,6 +564,15 @@ onMounted(async () => {
   refreshInterval = setInterval(fetchAllTelemetries, 60000);
   document.addEventListener('click', handleClickOutside);
   window.addEventListener('popstate', onPopState);
+
+  // Background idle preloading of StationHistoryModal chunk without competing with initial render
+  if (typeof window !== 'undefined') {
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => preloadStationHistoryModal(), { timeout: 3000 });
+    } else {
+      setTimeout(() => preloadStationHistoryModal(), 1500);
+    }
+  }
 });
 
 onUnmounted(() => {
@@ -1087,6 +1103,8 @@ const handleModalDirectInstall = async () => {
                 <td class="py-3 px-4 text-right">
                   <button
                     @click="openHistory(st)"
+                    @pointerenter="preloadStationHistoryModal"
+                    @focus="preloadStationHistoryModal"
                     class="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors"
                     :title="t('analytics')"
                   >
