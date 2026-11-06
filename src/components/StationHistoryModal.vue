@@ -933,6 +933,27 @@ const loadMonthGridFeeds = async (monthStr: string) => {
   }
 };
 
+// Transposed matrix for vertical timeline display (Hours 00:00..23:00 on Y-axis, Days 1..31 on X-axis)
+const monthGridByHour = computed(() => {
+  const matrix = monthGridMatrix.value;
+  if (!matrix || matrix.length === 0) return [];
+  const hoursRows: { hour: number; hourLabel: string; days: MonthGridHourCell[] }[] = [];
+  for (let h = 0; h < 24; h++) {
+    const daysCells: MonthGridHourCell[] = [];
+    for (const d of matrix) {
+      if (d.hours[h]) {
+        daysCells.push(d.hours[h]);
+      }
+    }
+    hoursRows.push({
+      hour: h,
+      hourLabel: (h < 10 ? '0' + h : h) + ':00',
+      days: daysCells,
+    });
+  }
+  return hoursRows;
+});
+
 // Build 24-hour rows by day for the matrix
 const monthGridMatrix = computed(() => {
   const map = monthGridFeeds.value;
@@ -1902,42 +1923,42 @@ const selectedDayMetrics = computed(() => {
                 </div>
               </div>
 
-              <!-- Matrix Grid: Days (rows) x 24 Hours (cols) -->
-              <div class="overflow-x-auto pb-4 pt-1 px-2">
+              <!-- Vertical Matrix Grid (90-degree rotated): 24 Hours (rows 00..23) x Days (columns 1..31) -->
+              <div class="overflow-x-auto pb-4 pt-1 px-1">
                 <div class="w-fit min-w-full flex flex-col items-center sm:items-start pr-2">
-                  <!-- Hour Headers 00 to 23 -->
-                  <div class="flex items-center text-[9px] font-bold text-slate-400 mb-1 pl-7 gap-0.5 sm:gap-1">
+                  <!-- Day Headers 1 to 31 -->
+                  <div class="flex items-center text-[9px] font-bold text-slate-400 mb-1.5 pl-9 gap-0.5 sm:gap-1">
                     <div 
-                      v-for="h in 24" 
-                      :key="h" 
+                      v-for="d in monthGridMatrix" 
+                      :key="d.day" 
                       class="w-3.5 sm:w-4 text-center shrink-0"
                     >
-                      <span v-if="(h - 1) % 4 === 0">{{ (h - 1).toString().padStart(2, '0') }}</span>
+                      <span v-if="d.day === 1 || d.day % 5 === 0 || d.day === monthGridMatrix.length">{{ d.day }}</span>
                       <span v-else class="text-slate-300">·</span>
                     </div>
                   </div>
 
-                  <!-- Days rows -->
-                  <div class="space-y-1">
+                  <!-- 24 Hourly rows -->
+                  <div class="space-y-0.5 sm:space-y-1">
                     <div 
-                      v-for="row in monthGridMatrix" 
-                      :key="row.day"
+                      v-for="hRow in monthGridByHour" 
+                      :key="hRow.hour"
                       class="flex items-center gap-1 relative"
-                      :class="hoveredMatrixCell && hoveredMatrixCell.day === row.day ? 'z-40' : 'z-0'"
+                      :class="hoveredMatrixCell && hoveredMatrixCell.hour === hRow.hour ? 'z-40' : 'z-0'"
                     >
-                      <!-- Day label -->
-                      <span class="w-6 text-[10px] font-bold text-slate-500 tabular-nums text-right shrink-0">
-                        {{ row.day }}
+                      <!-- Hour label (left axis) -->
+                      <span class="w-8 text-[10px] font-bold text-slate-500 tabular-nums text-right shrink-0">
+                        {{ hRow.hourLabel }}
                       </span>
 
-                      <!-- 24 hourly dots/cells -->
+                      <!-- Day cells across month -->
                       <div 
                         class="flex items-center gap-0.5 sm:gap-1"
                         @mouseleave="hoveredMatrixCell = null"
                       >
                         <button
-                          v-for="cell in row.hours"
-                          :key="cell.hour"
+                          v-for="cell in hRow.days"
+                          :key="cell.day"
                           @mouseenter="hoveredMatrixCell = cell"
                           @click="handleMatrixCellClick(cell)"
                           type="button"
@@ -1951,30 +1972,30 @@ const selectedDayMetrics = computed(() => {
                             'z-50': hoveredMatrixCell && hoveredMatrixCell.day === cell.day && hoveredMatrixCell.hour === cell.hour
                           }"
                           :style="cell.status === 'partial' ? {
-                            background: `linear-gradient(to top, #B91C1C 0%, #B91C1C ${cell.percent}%, #16A34A ${cell.percent}%, #16A34A 100%)`
+                            background: `linear-gradient(to bottom, #B91C1C 0%, #B91C1C ${cell.percent}%, #16A34A ${cell.percent}%, #16A34A 100%)`
                           } : {}"
                         >
-                          <!-- Floating Tooltip on Hover: smart 2D alignment (never clips container edge & never covers hovered cell) -->
+                          <!-- Floating Tooltip on Hover -->
                           <div 
                             v-if="hoveredMatrixCell && hoveredMatrixCell.day === cell.day && hoveredMatrixCell.hour === cell.hour && cell.tooltipText && cell.status !== 'nodata'"
                             class="pointer-events-none absolute z-[100] whitespace-nowrap flex flex-col"
                             :class="[
-                              row.day <= 2 ? 'top-full mt-3' : 'bottom-full mb-3',
-                              cell.hour >= 17 ? 'right-0 items-end' : (cell.hour <= 6 ? 'left-0 items-start' : 'left-1/2 -translate-x-1/2 items-center')
+                              cell.hour <= 3 ? 'top-full mt-3' : 'bottom-full mb-3',
+                              cell.day >= 24 ? 'right-0 items-end' : (cell.day <= 6 ? 'left-0 items-start' : 'left-1/2 -translate-x-1/2 items-center')
                             ]"
                           >
                             <div 
-                              v-if="row.day <= 2" 
+                              v-if="cell.hour <= 3" 
                               class="w-2 h-2 bg-slate-900 rotate-45 -mb-1 border-l border-t border-slate-700/80 z-10"
-                              :class="cell.hour >= 17 ? 'mr-3' : (cell.hour <= 6 ? 'ml-3' : '')"
+                              :class="cell.day >= 24 ? 'mr-3' : (cell.day <= 6 ? 'ml-3' : '')"
                             ></div>
                             <div class="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white text-[11px] font-semibold shadow-2xl border border-slate-700/80">
                               {{ cell.tooltipText }}
                             </div>
                             <div 
-                              v-if="row.day > 2" 
+                              v-if="cell.hour > 3" 
                               class="w-2 h-2 bg-slate-900 rotate-45 -mt-1 border-r border-b border-slate-700/80 z-10"
-                              :class="cell.hour >= 17 ? 'mr-3' : (cell.hour <= 6 ? 'ml-3' : '')"
+                              :class="cell.day >= 24 ? 'mr-3' : (cell.day <= 6 ? 'ml-3' : '')"
                             ></div>
                           </div>
                         </button>
