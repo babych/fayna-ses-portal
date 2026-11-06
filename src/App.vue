@@ -548,10 +548,40 @@ onMounted(async () => {
     }
   };
   clearBadgeSafely();
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') clearBadgeSafely();
+
+  // Automatic PWA Service Worker updates: check on resume / visible
+  const checkForUpdatesSafely = async () => {
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg) {
+          await reg.update();
+        }
+      } catch (_) {}
+    }
+  };
+
+  // Seamless auto-reload when a newly activated Service Worker takes control
+  let refreshingPage = false;
+  if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (!refreshingPage) {
+        refreshingPage = true;
+        window.location.reload();
+      }
+    });
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      clearBadgeSafely();
+      checkForUpdatesSafely();
+    }
   });
-  window.addEventListener('focus', clearBadgeSafely);
+  window.addEventListener("focus", () => {
+    clearBadgeSafely();
+    checkForUpdatesSafely();
+  });
 
   if (typeof window !== 'undefined') {
     isStandalone.value = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
