@@ -15,6 +15,18 @@ const emit = defineEmits<{
   (e: 'open-complex-outages'): void;
 }>();
 
+const formatDuration = (totalMinutes?: number) => {
+  if (!totalMinutes || totalMinutes <= 0) return '';
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+  if (h > 0 && m > 0) {
+    return `${h} ${t('hUnit')} ${m} ${t('minUnit')}`;
+  } else if (h > 0) {
+    return `${h} ${t('hUnit')}`;
+  }
+  return `${m} ${t('minUnit')}`;
+};
+
 const formatPower = (watts: number) => {
   const abs = Math.abs(watts);
   if (abs >= 1000) {
@@ -150,7 +162,7 @@ const estimatedEndTimeDisplay = computed(() => {
           <span class="text-sm font-black whitespace-nowrap block truncate">
             {{ 
               stats.blackoutStatus === 'full' 
-                ? t('gridBlackout') 
+                ? (stats.blackoutDurationMinutes && stats.blackoutDurationMinutes > 0 ? t('gridBlackoutWithDuration', { duration: formatDuration(stats.blackoutDurationMinutes) }) : t('gridBlackout'))
                 : stats.blackoutStatus === 'partial'
                   ? t('gridPartialBlackout', { count: stats.blackoutCount, total: stats.onlineStations })
                   : t('gridNormal') 

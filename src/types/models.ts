@@ -93,5 +93,6 @@ export interface ComplexAggregate {
   isBlackout: boolean; // true if grid is offline (total or partial)
   blackoutStatus: 'normal' | 'partial' | 'full'; // granular grid state
   blackoutCount: number; // number of stations in blackout
+  blackoutDurationMinutes?: number; // total ongoing outage duration in minutes
   estimatedComplexAutonomyHours: number | null;
 }

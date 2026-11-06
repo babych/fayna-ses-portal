@@ -103,6 +103,17 @@ const singleMonthDataCache = new Map<string, any>();
 // Selected date for day view navigation (always initialized to local today)
 const selectedDate = ref<string>(props.initialDate || getLocalDateStr()); // YYYY-MM-DD
 const selectedDayFeed = ref<RawTodayFeed | null>(null);
+const priorDayFeed = ref<RawTodayFeed | null>(null);
+
+const getPreviousDateStr = (dateStr: string) => {
+  const parts = dateStr.split('-').map(Number);
+  const d = new Date(parts[0], parts[1] - 1, parts[2]);
+  d.setDate(d.getDate() - 1);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
 const isHistoryDay = computed(() => {
   if (!selectedDate.value) return false;
   return selectedDate.value !== getLocalDateStr();
@@ -115,10 +126,29 @@ const initSelectedDates = () => {
   selectedDate.value = props.initialDate || getLocalDateStr();
   selectedMonth.value = props.initialMonth || getLocalMonthStr();
   selectedDayFeed.value = null;
+  priorDayFeed.value = null;
+};
+
+const loadPriorDayData = async (currentDateStr: string) => {
+  if (!props.station) return;
+  const prevDateStr = getPreviousDateStr(currentDateStr);
+  const cacheKey = `${props.station.id}:${prevDateStr}`;
+  if (singleDayFeedsCache.has(cacheKey)) {
+    priorDayFeed.value = singleDayFeedsCache.get(cacheKey)!;
+    return;
+  }
+  try {
+    const pFeed = await fetchDayHistory(props.station.id, prevDateStr);
+    singleDayFeedsCache.set(cacheKey, pFeed);
+    priorDayFeed.value = pFeed;
+  } catch {
+    priorDayFeed.value = null;
+  }
 };
 
 const loadDayData = async (dateStr: string) => {
   if (!props.station) return;
+  loadPriorDayData(dateStr).catch(() => {});
   const todayStr = getLocalDateStr();
   if (dateStr === todayStr) {
     selectedDayFeed.value = null; // Use live props.station.history
@@ -314,6 +344,8 @@ const loadData = async () => {
     await loadMonthData(selectedMonth.value);
   } else if (isHistoryDay.value && !selectedDayFeed.value) {
     await loadDayData(selectedDate.value);
+  } else {
+    loadPriorDayData(selectedDate.value).catch(() => {});
   }
 };
 
@@ -410,14 +442,49 @@ const dayBlackoutData = computed(() => {
   }
 
   const { timestamps, grid, load, batt } = feed;
-  const intervals = computeBlackoutIntervals(timestamps, grid, load, isHistoryDay.value, batt);
-  const powerIntervals = computePowerIntervals(timestamps, grid, load, isHistoryDay.value, batt, 'power');
-  const totalMinutes = intervals.reduce((acc, curr) => acc + curr.durationMinutes, 0);
-  const hourlyMinutes = computeHourlyBlackoutMinutes(intervals);
+  // Stitch with prior day feed if the day began during an active blackout
+  let effectiveTimestamps = timestamps;
+  let effectiveGrid = grid;
+  let effectiveLoad = load;
+  let effectiveBatt = batt;
 
-  // Determine current hour from telemetry timestamp or local time
-  const lastTs = timestamps.length > 0 ? timestamps[timestamps.length - 1] : Math.floor(Date.now() / 1000);
-  const currentTelemetryHour = isHistoryDay.value ? 24 : new Date(lastTs * 1000).getHours();
+  if (priorDayFeed.value && priorDayFeed.value.t && priorDayFeed.value.t.length && timestamps.length > 0) {
+    const firstG = grid[0] ?? 0;
+    const firstL = load[0] ?? 0;
+    const firstB = batt[0] ?? 0;
+    const dayStartedInBlackout = Math.abs(firstG) <= 20 && (firstL > 20 || firstB > 50);
+
+    if (dayStartedInBlackout) {
+      const pT = priorDayFeed.value.t;
+      const pG = priorDayFeed.value.grid;
+      const pL = priorDayFeed.value.load;
+      const pB = priorDayFeed.value.batt || [];
+      let pIdx = pT.length - 1;
+      let stitchStartIdx = -1;
+
+      while (pIdx >= 0) {
+        const gv = pG[pIdx] ?? 0;
+        const lv = pL[pIdx] ?? 0;
+        const bv = pB[pIdx] ?? 0;
+        if (Math.abs(gv) <= 20 && (lv > 20 || bv > 50)) {
+          stitchStartIdx = pIdx;
+          pIdx--;
+        } else {
+          break;
+        }
+      }
+
+      if (stitchStartIdx >= 0) {
+        effectiveTimestamps = [...pT.slice(stitchStartIdx), ...timestamps];
+        effectiveGrid = [...pG.slice(stitchStartIdx), ...grid];
+        effectiveLoad = [...pL.slice(stitchStartIdx), ...load];
+        effectiveBatt = [...pB.slice(stitchStartIdx), ...batt];
+      }
+    }
+  }
+
+  const allRawIntervals = computeBlackoutIntervals(effectiveTimestamps, effectiveGrid, effectiveLoad, isHistoryDay.value, effectiveBatt);
+  const powerIntervals = computePowerIntervals(timestamps, grid, load, isHistoryDay.value, batt, 'power');
 
   // Determine reference day base
   const refDateStr = isHistoryDay.value ? selectedDate.value : undefined;
@@ -432,6 +499,20 @@ const dayBlackoutData = computed(() => {
     const now = new Date();
     dayBase = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
   }
+
+  const dayStartMs = dayBase.getTime();
+  const dayEndMs = dayStartMs + 24 * 3600 * 1000;
+
+  // Filter intervals to only those overlapping the selected day
+  const intervals = allRawIntervals.filter(it => it.end.getTime() > dayStartMs && it.start.getTime() < dayEndMs);
+  const totalMinutes = intervals.reduce((acc, curr) => acc + curr.durationMinutes, 0);
+  const hourlyMinutes = computeHourlyBlackoutMinutes(intervals, selectedDate.value);
+
+  // Determine current hour from telemetry timestamp or local time
+  const lastTs = timestamps.length > 0 ? timestamps[timestamps.length - 1] : Math.floor(Date.now() / 1000);
+  const currentTelemetryHour = isHistoryDay.value ? 24 : new Date(lastTs * 1000).getHours();
+
+
 
   // Hourly stats with exact percentage of outage and detailed tooltip
   const hourlyStats: HourlyBlackoutStat[] = hourlyMinutes.map((m, h) => {
@@ -448,35 +529,42 @@ const dayBlackoutData = computed(() => {
     if (m >= 55) level = 'full';
     else if (m > 0) level = 'partial';
 
-    // Find intervals overlapping with this hour
+    const hourStartMs = dayBase.getTime() + h * 3600 * 1000;
+    const hourEndMs = hourStartMs + 3600 * 1000;
+
+    // Find intervals overlapping with this hour (precise timestamp overlap)
     const matchingIntervals = intervals.filter(it => {
-      const sH = it.start.getHours();
-      const eH = it.end.getHours();
-      return h >= sH && h <= eH;
+      const sMs = it.start.getTime();
+      const eMs = it.end.getTime();
+      return sMs < hourEndMs && eMs > hourStartMs;
     });
 
     const isOngoingInThisHour = matchingIntervals.some(it => it.isOngoing && h === currentTelemetryHour);
 
     // Overlapping power intervals (for Light ON tooltip)
     const matchingPower = powerIntervals.filter(it => {
-      const sH = it.start.getHours();
-      const eH = it.end.getHours();
-      return h >= sH && h <= eH;
+      const sMs = it.start.getTime();
+      const eMs = it.end.getTime();
+      return sMs < hourEndMs && eMs > hourStartMs;
     });
+
+    const targetDateStr = selectedDate.value || getLocalDateStr();
 
     let tooltipText = '';
     if (level === 'partial') {
       // Combine overlapping blackout and power intervals in chronological order
       const allEvents: { start: Date; str: string }[] = [];
       for (const it of matchingIntervals) {
-        const startStr = formatTimeRange(it.start);
-        const endStr = it.isOngoing ? t('history.ongoing') : formatTimeRange(it.end);
+        const crosses = it.start.toDateString() !== it.end.toDateString();
+        const startStr = crosses ? formatEventPoint(it.start, targetDateStr) : formatTimeRange(it.start);
+        const endStr = it.isOngoing ? t('history.ongoing') : (crosses ? formatEventPoint(it.end, targetDateStr) : formatTimeRange(it.end));
         const durStr = formatDuration(it.durationMinutes);
         allEvents.push({ start: it.start, str: `🔴 ${startStr} — ${endStr} (${durStr})` });
       }
       for (const it of matchingPower) {
-        const startStr = formatTimeRange(it.start);
-        const endStr = it.isOngoing ? t('history.ongoing') : formatTimeRange(it.end);
+        const crosses = it.start.toDateString() !== it.end.toDateString();
+        const startStr = crosses ? formatEventPoint(it.start, targetDateStr) : formatTimeRange(it.start);
+        const endStr = it.isOngoing ? t('history.ongoing') : (crosses ? formatEventPoint(it.end, targetDateStr) : formatTimeRange(it.end));
         const durStr = formatDuration(it.durationMinutes);
         allEvents.push({ start: it.start, str: `🟢 ${startStr} — ${endStr} (${durStr})` });
       }
@@ -484,16 +572,18 @@ const dayBlackoutData = computed(() => {
       tooltipText = allEvents.map(e => e.str).join('  |  ');
     } else if (matchingIntervals.length > 0 && level === 'full') {
       const parts = matchingIntervals.map(it => {
-        const startStr = formatTimeRange(it.start);
-        const endStr = it.isOngoing ? t('history.ongoing') : formatTimeRange(it.end);
+        const crosses = it.start.toDateString() !== it.end.toDateString();
+        const startStr = crosses ? formatEventPoint(it.start, targetDateStr) : formatTimeRange(it.start);
+        const endStr = it.isOngoing ? t('history.ongoing') : (crosses ? formatEventPoint(it.end, targetDateStr) : formatTimeRange(it.end));
         const durStr = formatDuration(it.durationMinutes);
         return `🔴 ${startStr} — ${endStr} (${durStr})`;
       });
       tooltipText = parts.join('  |  ');
     } else if (matchingPower.length > 0) {
       const parts = matchingPower.map(it => {
-        const startStr = formatTimeRange(it.start);
-        const endStr = it.isOngoing ? t('history.ongoing') : formatTimeRange(it.end);
+        const crosses = it.start.toDateString() !== it.end.toDateString();
+        const startStr = crosses ? formatEventPoint(it.start, targetDateStr) : formatTimeRange(it.start);
+        const endStr = it.isOngoing ? t('history.ongoing') : (crosses ? formatEventPoint(it.end, targetDateStr) : formatTimeRange(it.end));
         const durStr = formatDuration(it.durationMinutes);
         return `🟢 ${startStr} — ${endStr} (${durStr})`;
       });
@@ -505,8 +595,6 @@ const dayBlackoutData = computed(() => {
     }
 
     // Calculate exact within-hour segments for precise sub-hour gradient positioning
-    const hourStartMs = dayBase.getTime() + h * 3600 * 1000;
-    const hourEndMs = hourStartMs + 3600 * 1000;
     const segments: OutageSegment[] = [];
 
     for (const it of matchingIntervals) {
@@ -601,6 +689,23 @@ const monthBlackoutOptions = {
       title: { display: true, text: t('kwhUnit'), color: '#64748b' },
     },
   },
+};
+
+const formatEventPoint = (d: Date, refDateStr: string) => {
+  const timeStr = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+  const parts = refDateStr.split('-').map(Number);
+  const refD = new Date(parts[0], parts[1] - 1, parts[2]);
+  const targetD = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diffDays = Math.round((refD.getTime() - targetD.getTime()) / (24 * 3600 * 1000));
+
+  if (diffDays === 0) {
+    return `${timeStr} ${t('history.todayLabel').toLowerCase()}`;
+  } else if (diffDays === 1) {
+    return `${timeStr} ${t('history.yesterdayLabel').toLowerCase()}`;
+  } else {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${timeStr} (${d.getDate()} ${monthNames[d.getMonth()]})`;
+  }
 };
 
 const formatTimeRange = (d: Date) => {
@@ -1490,7 +1595,7 @@ const selectedDayMetrics = computed(() => {
               <span class="text-xs font-bold text-slate-700 block">{{ t('history.timeline24h') }}</span>
             </div>
 
-            <div class="grid grid-cols-6 sm:grid-cols-12 lg:grid-cols-24 border border-slate-300/80 rounded-sm overflow-hidden bg-slate-200/60 gap-px">
+            <div class="grid grid-cols-6 sm:grid-cols-12 lg:grid-cols-24 border border-slate-300/80 rounded-none overflow-hidden bg-slate-200/60 gap-px">
               <div 
                 v-for="hour in 24" 
                 :key="hour"
@@ -1593,7 +1698,7 @@ const selectedDayMetrics = computed(() => {
                   <div>
                     <div class="flex items-center gap-2">
                       <span class="font-extrabold text-slate-900 text-sm">
-                        {{ formatTimeRange(item.start) }} — {{ item.isOngoing ? t('history.ongoing') : formatTimeRange(item.end) }}
+                        {{ item.start.toDateString() !== item.end.toDateString() ? formatEventPoint(item.start, selectedDate || getLocalDateStr()) : formatTimeRange(item.start) }} — {{ item.isOngoing ? t('history.ongoing') : (item.start.toDateString() !== item.end.toDateString() ? formatEventPoint(item.end, selectedDate || getLocalDateStr()) : formatTimeRange(item.end)) }}
                       </span>
                     </div>
                     <span class="block text-[11px] text-slate-400 mt-0.5">{{ t('history.poweredByBatt') }}</span>
@@ -1698,7 +1803,7 @@ const selectedDayMetrics = computed(() => {
                           @mouseenter="hoveredMatrixCell = cell"
                           @click="handleMatrixCellClick(cell)"
                           type="button"
-                          class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-[3px] aspect-square shrink-0 select-none focus:outline-none relative"
+                          class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-none aspect-square shrink-0 select-none focus:outline-none relative"
                           :class="{
                             'bg-[#16A34A] hover:brightness-110': cell.status === 'on',
                             'bg-nordic-terracotta-700 hover:brightness-110': cell.status === 'off',
@@ -1781,19 +1886,19 @@ const selectedDayMetrics = computed(() => {
               <!-- Matrix Legend -->
               <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-500 mt-3 pt-3 border-t border-slate-200/80 gap-2">
                 <div class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-[2px] bg-[#16A34A]"></span>
+                  <span class="w-2.5 h-2.5 rounded-none bg-[#16A34A]"></span>
                   <span>{{ t('history.matrixLegendOn') }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-[2px] bg-[#D97706]"></span>
+                  <span class="w-2.5 h-2.5 rounded-none bg-[#D97706]"></span>
                   <span>{{ t('history.matrixLegendPartial') }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-[2px] bg-nordic-terracotta-700"></span>
+                  <span class="w-2.5 h-2.5 rounded-none bg-nordic-terracotta-700"></span>
                   <span>{{ t('history.matrixLegendOff') }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-[2px] bg-slate-200"></span>
+                  <span class="w-2.5 h-2.5 rounded-none bg-slate-200"></span>
                   <span>{{ t('history.matrixLegendNoData') }}</span>
                 </div>
               </div>

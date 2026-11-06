@@ -19,6 +19,7 @@ import type { StationMetadata, StationTelemetry, ComplexAggregate } from '@/type
 import { PRECONFIGURED_STATIONS, DASHBOARD_BASE_URL, createInitialStationTelemetries } from '@/constants/stations';
 import { 
   fetchTodayFeed, 
+  fetchDayHistory, 
   buildStationTelemetry 
 } from '@/services/api';
 import { useStationI18n } from '@/composables/useStationI18n';
@@ -307,6 +308,7 @@ const fetchSingleTelemetry = async (meta: StationMetadata) => {
 };
 
 const fetchAllTelemetries = async () => {
+  updateComplexBlackoutDuration().catch(() => {});
   refreshing.value = true;
   // Fetch all station telemetries in parallel first
   const results = await Promise.allSettled(
@@ -569,6 +571,95 @@ onUnmounted(() => {
   }
 });
 
+
+const yesterdayFeedsCache = new Map<string, any>();
+const complexBlackoutDurationMinutes = ref<number>(0);
+
+const getPreviousDateStr = (dateStr: string) => {
+  const parts = dateStr.split('-').map(Number);
+  const d = new Date(parts[0], parts[1] - 1, parts[2]);
+  d.setDate(d.getDate() - 1);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+
+watch(() => telemetries.value.map(t => t.gridPower), () => {
+  updateComplexBlackoutDuration().catch(() => {});
+}, { deep: true });
+
+const updateComplexBlackoutDuration = async () => {
+  const list = telemetries.value;
+  if (!list.length) return;
+  const blackoutStations = list.filter(s => !s.isStale && Math.abs(s.gridPower) <= 20 && (s.batteryPower > 50 || s.buildingPower > 50));
+  if (!blackoutStations.length) {
+    complexBlackoutDurationMinutes.value = 0;
+    return;
+  }
+
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const yesterdayStr = getPreviousDateStr(todayStr);
+
+  const durationPromises = blackoutStations.map(async (st) => {
+    const feed = st.history;
+    if (!feed || !feed.timestamps || !feed.timestamps.length) return 0;
+    const t = feed.timestamps;
+    const g = feed.grid;
+    const l = feed.load;
+    const b = feed.batt;
+    let idx = t.length - 1;
+    let startTs = t[idx];
+    const lastTs = t[idx];
+
+    while (idx >= 0) {
+      const gv = g[idx] ?? 0;
+      const lv = l[idx] ?? 0;
+      const bv = b[idx] ?? 0;
+      if (Math.abs(gv) <= 20 && (lv > 20 || bv > 50)) {
+        startTs = t[idx];
+        idx--;
+      } else {
+        break;
+      }
+    }
+
+    // If outage reached the beginning of today, check yesterday feed
+    if (idx < 0) {
+      const cacheKey = `${st.id}:${yesterdayStr}`;
+      let yFeed = yesterdayFeedsCache.get(cacheKey);
+      if (!yFeed) {
+        yFeed = await fetchDayHistory(st.id, yesterdayStr).catch(() => null);
+        if (yFeed) yesterdayFeedsCache.set(cacheKey, yFeed);
+      }
+      if (yFeed && yFeed.t && yFeed.t.length) {
+        const ty = yFeed.t;
+        const gy = yFeed.grid;
+        const ly = yFeed.load;
+        const by = yFeed.batt || [];
+        let yIdx = ty.length - 1;
+        while (yIdx >= 0) {
+          const gyv = gy[yIdx] ?? 0;
+          const lyv = ly[yIdx] ?? 0;
+          const byv = by[yIdx] ?? 0;
+          if (Math.abs(gyv) <= 20 && (lyv > 20 || byv > 50)) {
+            startTs = ty[yIdx];
+            yIdx--;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
+    return Math.max(0, Math.floor((lastTs - startTs) / 60));
+  });
+
+  const durations = await Promise.all(durationPromises);
+  complexBlackoutDurationMinutes.value = durations.length ? Math.max(...durations) : 0;
+};
+
 const complexStats = ref<ComplexAggregate>({
   totalStations: PRECONFIGURED_STATIONS.length,
   onlineStations: PRECONFIGURED_STATIONS.length,
@@ -663,6 +754,7 @@ watchEffect(() => {
     isBlackout,
     blackoutStatus,
     blackoutCount,
+    blackoutDurationMinutes: complexBlackoutDurationMinutes.value,
     estimatedComplexAutonomyHours: estimatedHours,
   };
 });
