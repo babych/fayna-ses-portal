@@ -940,7 +940,7 @@ const handleModalDirectInstall = async () => {
           title="Fayna SES Home"
         >
           <!-- App Identity Icon matching PWA App Icon -->
-          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-[#323842] to-[#242830] p-1 shadow-md shadow-slate-900/15 border border-slate-600/40 group-hover:scale-105 group-hover:border-emerald-500/60 transition-all flex items-center justify-center shrink-0">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-[#323842] to-[#242830] p-1 shadow-md shadow-slate-900/15 border border-slate-600/40 group-hover:scale-105 group-hover:border-emerald-500/60 transition-all flex items-center justify-center shrink-0">
             <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="headerEnergyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -972,7 +972,7 @@ const handleModalDirectInstall = async () => {
             @click="isPushModalOpen = true"
             @pointerenter="preloadPushNotificationModal"
             @focus="preloadPushNotificationModal"
-            class="p-1.5 sm:p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-emerald-700 transition-all border border-slate-200 shrink-0"
+            class="p-1.5 sm:p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-emerald-700 transition-all border border-slate-200 shrink-0"
             :title="t('notifications')"
           >
             <Bell class="w-4 h-4" />
@@ -981,7 +981,7 @@ const handleModalDirectInstall = async () => {
           <!-- Language Switcher UA / EN (Shows target language to switch to) -->
           <button
             @click="toggleLanguage"
-            class="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all border border-slate-200"
+            class="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all border border-slate-200"
             :title="locale === 'uk' ? 'Switch to English' : 'Перемкнути на українську'"
           >
             <Globe class="w-3.5 h-3.5 text-emerald-600" />
@@ -994,7 +994,7 @@ const handleModalDirectInstall = async () => {
             @click="handleInstallClick"
             @pointerenter="preloadPwaInstallModal"
             @focus="preloadPwaInstallModal"
-            class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 transition-all shadow-md shadow-emerald-600/20"
+            class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 transition-all shadow-md shadow-emerald-600/20"
             :title="t('installApp')"
           >
             <Download class="w-3.5 h-3.5" />
@@ -1005,7 +1005,7 @@ const handleModalDirectInstall = async () => {
           <button 
             type="button"
             @click.prevent.stop="handleManualRefresh"
-            class="p-1.5 sm:p-2 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200 shrink-0 select-none outline-none focus:outline-none"
+            class="p-1.5 sm:p-2 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-200 shrink-0 select-none outline-none focus:outline-none"
             :class="{ 'pointer-events-none opacity-60': isManualRefreshing }"
             :title="t('refresh')"
           >
@@ -1017,7 +1017,7 @@ const handleModalDirectInstall = async () => {
             @click="openAddModal"
             @pointerenter="preloadAddStationModal"
             @focus="preloadAddStationModal"
-            class="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold transition-all shadow-sm"
+            class="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold transition-all shadow-sm"
           >
             <Plus class="w-4 h-4 text-emerald-400" />
             <span>{{ t('addStation') }}</span>
@@ -1045,7 +1045,7 @@ const handleModalDirectInstall = async () => {
             v-model="searchQuery"
             type="text"
             :placeholder="t('searchPlaceholder')"
-            class="w-full pl-10 pr-4 py-2 rounded-2xl bg-white border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-xs transition-all"
+            class="w-full pl-10 pr-4 py-2 rounded-lg bg-white border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 shadow-xs transition-all"
           />
         </div>
 
@@ -1056,7 +1056,7 @@ const handleModalDirectInstall = async () => {
             {{ t('found', { count: filteredTelemetries.length || PRECONFIGURED_STATIONS.length }) }}
           </span>
 
-          <div class="flex items-center p-1 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <div class="flex items-center p-1 rounded-lg bg-white border border-slate-200 shadow-xs">
             <button
               @click="viewMode = 'grid'"
               class="p-1.5 rounded-lg text-xs transition-colors"
@@ -1091,13 +1091,13 @@ const handleModalDirectInstall = async () => {
           />
         </div>
 
-        <div v-else class="text-center py-16 rounded-3xl bg-white border border-slate-200">
+        <div v-else class="text-center py-16 rounded-lg bg-white border border-slate-200">
           <p class="text-slate-500 text-sm font-medium">{{ t('emptySearch') }}</p>
         </div>
       </div>
 
       <!-- Table View -->
-      <div v-else class="rounded-3xl bg-white border border-slate-200 overflow-hidden shadow-sm">
+      <div v-else class="rounded-lg bg-white border border-slate-200 overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead class="bg-slate-50 text-slate-500 uppercase tracking-wider text-[11px] border-b border-slate-200">
@@ -1210,7 +1210,7 @@ const handleModalDirectInstall = async () => {
 
             <div 
               v-if="isDashboardMenuOpen"
-              class="absolute bottom-full right-0 mb-2 w-80 rounded-2xl bg-white border border-slate-200 p-2 shadow-2xl z-50 animate-fade-in"
+              class="absolute bottom-full right-0 mb-2 w-80 rounded-lg bg-white border border-slate-200 p-2 shadow-2xl z-50 animate-fade-in"
             >
               <div class="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
                 {{ t('origTitle') }}
@@ -1222,7 +1222,7 @@ const handleModalDirectInstall = async () => {
                   :href="`${DASHBOARD_BASE_URL}/${st.id}`"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex items-center justify-between gap-2 p-2.5 rounded-xl hover:bg-slate-50 transition-colors text-slate-800 text-xs font-semibold group"
+                  class="flex items-center justify-between gap-2 p-2.5 rounded-lg hover:bg-slate-50 transition-colors text-slate-800 text-xs font-semibold group"
                 >
                   <div class="min-w-0 flex-1">
                     <span class="block truncate group-hover:text-emerald-600 transition-colors">{{ getStationName(st) }}</span>

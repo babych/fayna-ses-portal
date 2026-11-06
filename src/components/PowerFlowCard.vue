@@ -29,16 +29,16 @@ const formatW = (watts: number) => {
 </script>
 
 <template>
-  <div class="relative w-full rounded-2xl bg-slate-50 border border-slate-200 p-4 overflow-hidden">
+  <div class="relative w-full rounded-lg bg-slate-50 border border-slate-200 p-4 overflow-hidden">
     <!-- Grid items layout: fixed 3 columns by default, expanding to 4 only when solar generates -->
     <div 
       class="relative z-10 grid gap-2 text-center transition-all duration-300"
       :class="(solarPower > 50 || hasPv) ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'"
     >
       <!-- 1. Solar (Only if generating > 0) -->
-      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-2 rounded-xl bg-white border border-slate-200/80 shadow-xs h-[102px] box-border justify-between overflow-hidden">
+      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[102px] box-border justify-between overflow-hidden">
         <div class="flex flex-col items-center">
-          <div class="p-1.5 rounded-xl bg-amber-50 text-amber-500 mb-1">
+          <div class="p-1.5 rounded-lg bg-amber-50 text-amber-500 mb-1">
             <Sun class="w-4 h-4" />
           </div>
           <span class="text-[11px] text-slate-500 font-medium whitespace-nowrap truncate max-w-full h-[14px] leading-[14px]">{{ t('solar') }}</span>
@@ -50,7 +50,7 @@ const formatW = (watts: number) => {
 
       <!-- 2. Grid -->
       <div 
-        class="flex flex-col items-center p-2 rounded-xl bg-white border shadow-xs transition-all h-[102px] box-border justify-between overflow-hidden"
+        class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all h-[102px] box-border justify-between overflow-hidden"
         :class="isInitialLoading 
           ? 'border-slate-200/80 bg-white'
           : gridPower > 50 
@@ -59,7 +59,7 @@ const formatW = (watts: number) => {
       >
         <div class="flex flex-col items-center">
           <div 
-            class="p-1.5 rounded-xl mb-1 transition-colors"
+            class="p-1.5 rounded-lg mb-1 transition-colors"
             :class="isInitialLoading 
               ? 'bg-slate-100 text-slate-400' 
               : gridPower > 50 
@@ -94,7 +94,7 @@ const formatW = (watts: number) => {
 
       <!-- 3. Battery -->
       <div 
-        class="flex flex-col items-center p-2 rounded-xl bg-white border shadow-xs transition-all h-[102px] box-border justify-between overflow-hidden"
+        class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all h-[102px] box-border justify-between overflow-hidden"
         :class="{
           'border-nordic-green-300 bg-nordic-green-50/50': batteryState === 'charging',
           'border-nordic-ochre-300 bg-nordic-ochre-50/50': batteryState === 'discharging',
@@ -102,7 +102,7 @@ const formatW = (watts: number) => {
         }"
       >
         <div class="flex flex-col items-center">
-          <div class="p-1.5 rounded-xl bg-nordic-green-50 text-nordic-green-700 mb-1">
+          <div class="p-1.5 rounded-lg bg-nordic-green-50 text-nordic-green-700 mb-1">
             <Battery class="w-4 h-4" />
           </div>
           <span class="text-[11px] text-slate-500 font-medium tabular-nums whitespace-nowrap truncate max-w-full h-[14px] leading-[14px] mb-0.5">
@@ -119,9 +119,9 @@ const formatW = (watts: number) => {
       </div>
 
       <!-- 4. Load -->
-      <div class="flex flex-col items-center p-2 rounded-xl bg-white border border-slate-200/80 shadow-xs h-[102px] box-border justify-between overflow-hidden">
+      <div class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[102px] box-border justify-between overflow-hidden">
         <div class="flex flex-col items-center">
-          <div class="p-1.5 rounded-xl bg-slate-100 text-slate-700 mb-1">
+          <div class="p-1.5 rounded-lg bg-slate-100 text-slate-700 mb-1">
             <Building2 class="w-4 h-4" />
           </div>
           <span class="text-[11px] text-slate-500 font-medium whitespace-nowrap truncate max-w-full h-[14px] leading-[14px] mb-0.5">{{ t('load') }}</span>

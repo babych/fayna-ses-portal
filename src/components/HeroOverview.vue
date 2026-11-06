@@ -102,7 +102,7 @@ const estimatedEndTimeDisplay = computed(() => {
 </script>
 
 <template>
-  <div class="relative w-full rounded-3xl bg-white border border-slate-200/90 p-6 md:p-8 shadow-sm">
+  <div class="relative w-full rounded-xl bg-white border border-slate-200/90 p-6 md:p-8 shadow-sm">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-100">
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
@@ -129,7 +129,7 @@ const estimatedEndTimeDisplay = computed(() => {
         @pointerenter="import('@/components/ComplexOutagesModal.vue').catch(() => {})"
         @focus="import('@/components/ComplexOutagesModal.vue').catch(() => {})"
         :title="t('complexOutages.buttonTooltip')"
-        class="flex items-center gap-3 px-4 py-2.5 rounded-2xl border transition-colors duration-200 shrink-0 w-full md:w-[290px] h-[60px] text-left cursor-pointer group focus:outline-none focus:ring-2 focus:ring-nordic-terracotta-500/20"
+        class="flex items-center gap-3 px-4 py-2.5 rounded-lg border transition-colors duration-200 shrink-0 w-full md:w-[290px] h-[60px] text-left cursor-pointer group focus:outline-none focus:ring-2 focus:ring-nordic-terracotta-500/20"
         :class="loading && stats.totalBuildingPowerW === 0
           ? 'bg-white border-slate-200 text-slate-400'
           : stats.blackoutStatus === 'full'
@@ -139,7 +139,7 @@ const estimatedEndTimeDisplay = computed(() => {
               : 'bg-nordic-green-50 border-nordic-green-200 text-nordic-green-800 hover:border-nordic-green-300 hover:bg-nordic-green-100/60'"
       >
         <div 
-          class="p-2 rounded-xl shrink-0 transition-colors duration-200"
+          class="p-2 rounded-lg shrink-0 transition-colors duration-200"
           :class="loading && stats.totalBuildingPowerW === 0
             ? 'bg-slate-100 text-slate-400'
             : stats.blackoutStatus === 'full'
@@ -180,7 +180,7 @@ const estimatedEndTimeDisplay = computed(() => {
       :class="stats.totalSolarPowerW > 50 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'"
     >
       <!-- 1. Battery SoC -->
-      <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border">
+      <div class="p-3.5 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border">
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2 text-slate-500 text-xs font-bold mb-1">
             <Battery class="w-4 h-4 text-nordic-green-600 shrink-0" />
@@ -208,7 +208,7 @@ const estimatedEndTimeDisplay = computed(() => {
       </div>
 
       <!-- 2. Autonomy -->
-      <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border">
+      <div class="p-3.5 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border">
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2 text-slate-500 text-xs font-bold mb-1">
             <Clock class="w-4 h-4 text-nordic-ochre-600 shrink-0" />
@@ -244,7 +244,7 @@ const estimatedEndTimeDisplay = computed(() => {
       </div>
 
       <!-- 3. Solar Generation (Only displayed if generation > 0) -->
-      <div v-if="stats.totalSolarPowerW > 50" class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border">
+      <div v-if="stats.totalSolarPowerW > 50" class="p-3.5 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border">
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2 text-slate-500 text-xs font-bold mb-1">
             <Sun class="w-4 h-4 text-nordic-ochre-600 shrink-0" />
@@ -265,7 +265,7 @@ const estimatedEndTimeDisplay = computed(() => {
       </div>
 
       <!-- 4. Building Load -->
-      <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border">
+      <div class="p-3.5 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border">
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2 text-slate-500 text-xs font-bold mb-1">
             <Building2 class="w-4 h-4 text-slate-600 shrink-0" />

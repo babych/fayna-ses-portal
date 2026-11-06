@@ -52,7 +52,7 @@ const formatTimeAgo = (seconds: number) => {
 
 <template>
   <div 
-    class="group relative rounded-3xl bg-white border border-slate-200/90 p-5 shadow-sm hover:shadow-xl hover:border-slate-300 transition-[box-shadow,border-color] duration-300 flex flex-col justify-between"
+    class="group relative rounded-xl bg-white border border-slate-200/90 p-5 shadow-sm hover:shadow-xl hover:border-slate-300 transition-[box-shadow,border-color] duration-300 flex flex-col justify-between"
   >
     <div>
       <div class="flex items-start justify-between gap-3">
@@ -95,7 +95,7 @@ const formatTimeAgo = (seconds: number) => {
         <div class="flex items-center gap-1.5">
           <button
             @click="shareStation"
-            class="p-2 rounded-xl bg-slate-50 border border-slate-200 transition-all"
+            class="p-2 rounded-lg bg-slate-50 border border-slate-200 transition-all"
             :class="copied ? 'text-emerald-700 bg-emerald-50 border-emerald-300' : 'text-slate-500 hover:text-emerald-700 hover:bg-emerald-50'"
             :title="copied ? t('copied') : t('share')"
           >

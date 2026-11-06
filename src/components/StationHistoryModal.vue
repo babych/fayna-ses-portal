@@ -1449,12 +1449,12 @@ const selectedDayMetrics = computed(() => {
     @click.self="emit('close')"
     class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/40 backdrop-blur-md animate-fade-in"
   >
-    <div class="relative w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
+    <div class="relative w-full max-w-4xl max-h-[92vh] flex flex-col rounded-xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
       <!-- Fixed Header -->
       <div class="p-4 sm:p-8 pb-4 sm:pb-5 border-b border-slate-100 shrink-0">
         <button 
           @click="emit('close')"
-          class="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors z-10"
+          class="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors z-10"
         >
           <X class="w-5 h-5" />
         </button>
@@ -1481,7 +1481,7 @@ const selectedDayMetrics = computed(() => {
             <!-- Historical Navigation Bar -->
             <div 
               v-if="mode === 'day' || (mode === 'blackouts' && blackoutSubTab === 'day')"
-              class="flex items-center justify-between px-2 py-1 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 h-[38px] box-border shrink-0"
+              class="flex items-center justify-between px-2 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 h-[38px] box-border shrink-0"
             >
               <button 
                 @click="navigateDay(-1)"
@@ -1521,7 +1521,7 @@ const selectedDayMetrics = computed(() => {
 
             <div 
               v-else-if="mode === 'blackouts' && blackoutSubTab === 'month'"
-              class="flex items-center justify-between px-2 py-1 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 h-[38px] box-border shrink-0"
+              class="flex items-center justify-between px-2 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 h-[38px] box-border shrink-0"
             >
               <button 
                 @click="navigateMonth(-1)"
@@ -1562,7 +1562,7 @@ const selectedDayMetrics = computed(() => {
             </div>
 
             <!-- Mode Switcher (2 clean tabs: Day & Blackouts/Grid) -->
-            <div class="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 h-[40px] box-border gap-1 w-full sm:w-auto shrink-0">
+            <div class="grid grid-cols-2 p-1 rounded-lg bg-slate-100 border border-slate-200 h-[40px] box-border gap-1 w-full sm:w-auto shrink-0">
               <button
                 @click="mode = 'day'"
                 class="px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-center truncate"
@@ -1598,7 +1598,7 @@ const selectedDayMetrics = computed(() => {
             class="grid gap-2.5"
             :class="station.pvKw > 0 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'"
           >
-            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-between">
               <div>
                 <span class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{{ t('history.inverter') }}</span>
                 <span class="text-sm font-extrabold text-slate-800">{{ station.inverterKw > 0 ? `${station.inverterKw} ${t('kwUnit')}` : '—' }}</span>
@@ -1608,7 +1608,7 @@ const selectedDayMetrics = computed(() => {
               </span>
             </div>
 
-            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-between">
               <div>
                 <span class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{{ t('history.storedEnergy') }}</span>
                 <span class="text-sm font-extrabold text-emerald-700">{{ selectedDayMetrics.remainingEnergyKwh }} {{ t('kwhUnit') }}</span>
@@ -1616,12 +1616,12 @@ const selectedDayMetrics = computed(() => {
               <span class="text-[10px] font-bold text-slate-400">/ {{ station.batteryKwh }}</span>
             </div>
 
-            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
               <span class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{{ t('history.peakLoadToday') }}</span>
               <span class="text-sm font-extrabold text-purple-700">{{ selectedDayMetrics.peakLoadW }} {{ t('wUnit') }}</span>
             </div>
 
-            <div v-if="station.pvKw > 0" class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+            <div v-if="station.pvKw > 0" class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
               <span class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider">{{ t('history.pvPower') }}</span>
               <span class="text-sm font-extrabold text-amber-600">{{ selectedDayMetrics.pvPowerStr }}</span>
             </div>
@@ -1629,19 +1629,19 @@ const selectedDayMetrics = computed(() => {
 
           <!-- Main Daily Metrics -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100 text-center">
               <span class="block text-[11px] font-semibold text-slate-400">{{ t('history.currentSoc') }}</span>
               <span class="text-lg font-black text-emerald-600 mt-0.5">{{ selectedDayMetrics.batteryLevel }}%</span>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100 text-center">
               <span class="block text-[11px] font-semibold text-slate-400">{{ t('history.batteryCapacity') }}</span>
               <span class="text-lg font-black text-slate-800 mt-0.5">{{ station.batteryKwh }} {{ t('kwhUnit') }}</span>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100 text-center">
               <span class="block text-[11px] font-semibold text-slate-400">{{ t('history.consumedToday') }}</span>
               <span class="text-lg font-black text-purple-600 mt-0.5">{{ selectedDayMetrics.consumedKwh }} {{ t('kwhUnit') }}</span>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100 text-center">
               <span class="block text-[11px] font-semibold text-slate-400">{{ t('history.gridToday') }}</span>
               <span class="text-lg font-black text-sky-600 mt-0.5">{{ selectedDayMetrics.gridKwh }} {{ t('kwhUnit') }}</span>
             </div>
@@ -1654,7 +1654,7 @@ const selectedDayMetrics = computed(() => {
         <div class="flex items-center justify-between pb-2 border-b border-slate-100">
           <span class="text-sm font-extrabold text-slate-900">{{ blackoutSubTab === 'month' ? t('history.blackoutsMonthTitle') : t('history.blackoutsTitle') }}</span>
 
-          <div class="flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200">
+          <div class="flex items-center p-1 rounded-lg bg-slate-100 border border-slate-200">
             <button
               @click="blackoutSubTab = 'day'"
               class="px-3 py-1 rounded-lg text-xs font-bold transition-all"
@@ -1675,8 +1675,8 @@ const selectedDayMetrics = computed(() => {
         <!-- DAILY BLACKOUT VIEW -->
         <template v-if="blackoutSubTab === 'day'">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="p-4 rounded-2xl bg-nordic-terracotta-50 border border-nordic-terracotta-100 flex items-center gap-4">
-              <div class="p-3 rounded-xl bg-nordic-terracotta-100 text-nordic-terracotta-600">
+            <div class="p-4 rounded-lg bg-nordic-terracotta-50 border border-nordic-terracotta-100 flex items-center gap-4">
+              <div class="p-3 rounded-lg bg-nordic-terracotta-100 text-nordic-terracotta-600">
                 <Clock class="w-6 h-6" />
               </div>
               <div>
@@ -1687,8 +1687,8 @@ const selectedDayMetrics = computed(() => {
               </div>
             </div>
 
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center gap-4">
-              <div class="p-3 rounded-xl bg-slate-200 text-slate-700">
+            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center gap-4">
+              <div class="p-3 rounded-lg bg-slate-200 text-slate-700">
                 <AlertTriangle class="w-6 h-6" />
               </div>
               <div>
@@ -1701,7 +1701,7 @@ const selectedDayMetrics = computed(() => {
           </div>
 
           <!-- 24-hour timeline with exact percentage blackout fill -->
-          <div class="p-3 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200">
+          <div class="p-3 sm:p-5 rounded-lg bg-slate-50 border border-slate-200">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-bold text-slate-700 block">{{ t('history.timeline24h') }}</span>
             </div>
@@ -1794,7 +1794,7 @@ const selectedDayMetrics = computed(() => {
           <!-- Outage Intervals Log -->
           <div>
             <span class="text-xs font-bold text-slate-700 block mb-3">{{ t('history.periodsLog') }}</span>
-            <div v-if="dayBlackoutData.intervals.length === 0" class="p-6 rounded-2xl bg-emerald-50 border border-emerald-100 text-center text-emerald-800 text-xs font-semibold flex items-center justify-center gap-2">
+            <div v-if="dayBlackoutData.intervals.length === 0" class="p-6 rounded-lg bg-emerald-50 border border-emerald-100 text-center text-emerald-800 text-xs font-semibold flex items-center justify-center gap-2">
               <CheckCircle class="w-4 h-4 text-emerald-600" />
               <span>{{ t('history.noBlackoutsToday') }}</span>
             </div>
@@ -1828,8 +1828,8 @@ const selectedDayMetrics = computed(() => {
           <div class="space-y-4">
             <!-- Outage totals for the month: Total outage time & Outage count -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="p-4 rounded-2xl bg-nordic-terracotta-50 border border-nordic-terracotta-100 flex items-center gap-4">
-                <div class="p-3 rounded-xl bg-nordic-terracotta-100 text-nordic-terracotta-600">
+              <div class="p-4 rounded-lg bg-nordic-terracotta-50 border border-nordic-terracotta-100 flex items-center gap-4">
+                <div class="p-3 rounded-lg bg-nordic-terracotta-100 text-nordic-terracotta-600">
                   <Clock class="w-6 h-6" />
                 </div>
                 <div>
@@ -1840,8 +1840,8 @@ const selectedDayMetrics = computed(() => {
                 </div>
               </div>
 
-              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center gap-4">
-                <div class="p-3 rounded-xl bg-slate-200 text-slate-700">
+              <div class="p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex items-center gap-4">
+                <div class="p-3 rounded-lg bg-slate-200 text-slate-700">
                   <AlertTriangle class="w-6 h-6" />
                 </div>
                 <div>
@@ -1858,25 +1858,25 @@ const selectedDayMetrics = computed(() => {
               class="grid gap-3"
               :class="monthTotals.pv > 0 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2 sm:grid-cols-3'"
             >
-              <div class="p-3.5 rounded-2xl bg-nordic-terracotta-50 border border-nordic-terracotta-100 flex flex-col justify-center">
+              <div class="p-3.5 rounded-lg bg-nordic-terracotta-50 border border-nordic-terracotta-100 flex flex-col justify-center">
                 <span class="text-[11px] font-bold text-nordic-terracotta-600 block uppercase tracking-wider">{{ t('history.totalMonthBattery') }}</span>
                 <span class="text-xl sm:text-2xl font-black text-nordic-terracotta-700 mt-0.5">
                   {{ monthTotals.battery }} <span class="text-xs font-bold text-nordic-terracotta-500">{{ t('kwhUnit') }}</span>
                 </span>
               </div>
-              <div class="p-3.5 rounded-2xl bg-purple-50 border border-purple-100 flex flex-col justify-center">
+              <div class="p-3.5 rounded-lg bg-purple-50 border border-purple-100 flex flex-col justify-center">
                 <span class="text-[11px] font-bold text-purple-600 block uppercase tracking-wider">{{ t('history.totalMonthLoad') }}</span>
                 <span class="text-xl sm:text-2xl font-black text-purple-700 mt-0.5">
                   {{ monthTotals.load }} <span class="text-xs font-bold text-purple-500">{{ t('kwhUnit') }}</span>
                 </span>
               </div>
-              <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-100 flex flex-col justify-center">
+              <div class="p-3.5 rounded-lg bg-sky-50 border border-sky-100 flex flex-col justify-center">
                 <span class="text-[11px] font-bold text-sky-600 block uppercase tracking-wider">{{ t('history.totalMonthGrid') }}</span>
                 <span class="text-xl sm:text-2xl font-black text-sky-700 mt-0.5">
                   {{ monthTotals.grid }} <span class="text-xs font-bold text-sky-500">{{ t('kwhUnit') }}</span>
                 </span>
               </div>
-              <div v-if="monthTotals.pv > 0" class="p-3.5 rounded-2xl bg-amber-50 border border-amber-100 flex flex-col justify-center">
+              <div v-if="monthTotals.pv > 0" class="p-3.5 rounded-lg bg-amber-50 border border-amber-100 flex flex-col justify-center">
                 <span class="text-[11px] font-bold text-amber-600 block uppercase tracking-wider">{{ t('history.totalMonthPv') }}</span>
                 <span class="text-xl sm:text-2xl font-black text-amber-700 mt-0.5">
                   {{ monthTotals.pv }} <span class="text-xs font-bold text-amber-500">{{ t('kwhUnit') }}</span>
@@ -1885,7 +1885,7 @@ const selectedDayMetrics = computed(() => {
             </div>
 
             <!-- Continuous Monthly Grid Heatmap Matrix -->
-            <div class="p-3 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200">
+            <div class="p-3 sm:p-5 rounded-lg bg-slate-50 border border-slate-200">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-1">
                 <div>
                   <span class="text-xs font-bold text-slate-800 block">{{ t('history.monthlyMatrixTitle') }}</span>
@@ -2042,7 +2042,7 @@ const selectedDayMetrics = computed(() => {
               </div>
             </div>
 
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
               <span class="text-xs font-bold text-slate-700 block mb-1">{{ t('history.blackoutMonthDesc') }}</span>
               <p class="text-[11px] text-slate-500 mb-4">{{ t('history.blackoutMonthSub') }}</p>
               <div class="h-[320px] w-full">

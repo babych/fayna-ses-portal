@@ -372,11 +372,11 @@ const chartOptions = computed(() => ({
     @click.self="emit('close')"
     class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
   >
-    <div class="relative w-full max-w-4xl max-h-[92vh] bg-white rounded-3xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden">
+    <div class="relative w-full max-w-4xl max-h-[92vh] bg-white rounded-xl border border-slate-200 shadow-2xl flex flex-col overflow-hidden">
       <!-- Modal Header -->
       <div class="px-5 py-3.5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-nordic-terracotta-50 border border-nordic-terracotta-200 text-nordic-terracotta-600 flex items-center justify-center shrink-0">
+          <div class="w-10 h-10 rounded-lg bg-nordic-terracotta-50 border border-nordic-terracotta-200 text-nordic-terracotta-600 flex items-center justify-center shrink-0">
             <Activity class="w-5 h-5" />
           </div>
           <div>
@@ -430,7 +430,7 @@ const chartOptions = computed(() => ({
 
           <button 
             @click="emit('close')"
-            class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
             :aria-label="t('close')"
           >
             <X class="w-5 h-5" />
@@ -441,7 +441,7 @@ const chartOptions = computed(() => ({
       <!-- Content Area -->
       <div class="p-4 sm:p-6 overflow-y-auto flex-1 flex flex-col gap-4">
         <!-- Legend Guide Bar -->
-        <div class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs">
+        <div class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-lg bg-slate-50 border border-slate-200/80 text-xs">
           <div class="flex items-center gap-4">
             <div class="flex items-center gap-1.5 font-bold text-slate-700">
               <span class="w-2.5 h-2.5 rounded-full bg-nordic-green-600"></span>
@@ -458,7 +458,7 @@ const chartOptions = computed(() => ({
         </div>
 
         <!-- Multi-Track Stepped Chart with Smooth Fade Transition (No intrusive blocking spinner) -->
-        <div class="w-full h-[320px] sm:h-[380px] p-1 sm:p-2 bg-white rounded-2xl border border-slate-100 relative">
+        <div class="w-full h-[320px] sm:h-[380px] p-1 sm:p-2 bg-white rounded-lg border border-slate-100 relative">
           <div :class="loadingHistory ? 'opacity-40 transition-opacity duration-150' : 'opacity-100 transition-opacity duration-150'" class="w-full h-full">
             <Line :data="chartData" :options="chartOptions" />
           </div>
@@ -478,7 +478,7 @@ const chartOptions = computed(() => ({
             <div
               v-for="(st, idx) in stations"
               :key="st.id"
-              class="flex items-center justify-between p-2 rounded-xl border transition-all"
+              class="flex items-center justify-between p-2 rounded-lg border transition-all"
               :class="hiddenStationIds.has(st.id) ? 'border-slate-100 bg-slate-50/50 opacity-50' : 'border-slate-200 bg-white hover:border-slate-300'"
             >
               <!-- Toggle Visibility Button -->

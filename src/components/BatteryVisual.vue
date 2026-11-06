@@ -47,7 +47,7 @@ const formattedPower = computed(() => {
       ></div>
 
       <div 
-        class="w-28 h-44 rounded-2xl p-1.5 bg-white border-2 shadow-lg shadow-slate-200/50 relative overflow-hidden transition-all duration-500"
+        class="w-28 h-44 rounded-lg p-1.5 bg-white border-2 shadow-lg shadow-slate-200/50 relative overflow-hidden transition-all duration-500"
         :class="batteryBorderColor"
       >
         <div class="absolute inset-y-2 right-2 flex flex-col justify-between opacity-30 pointer-events-none z-20">
@@ -58,7 +58,7 @@ const formattedPower = computed(() => {
           <span class="w-2 h-0.5 bg-slate-400"></span>
         </div>
 
-        <div class="relative w-full h-full rounded-xl overflow-hidden bg-slate-100 flex flex-col justify-end">
+        <div class="relative w-full h-full rounded-lg overflow-hidden bg-slate-100 flex flex-col justify-end">
           <div 
             class="w-full bg-gradient-to-t transition-all duration-1000 ease-out relative"
             :class="batteryColor"
