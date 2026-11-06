@@ -749,59 +749,6 @@ const loadMonthGridFeeds = async (monthStr: string) => {
   }
 };
 
-// Compute continuous events across days
-const monthContinuousEvents = computed<ContinuousPowerEvent[]>(() => {
-  const map = monthGridFeeds.value;
-  if (!map || map.size === 0) return [];
-
-  const allPoints: { t: number; isOff: boolean }[] = [];
-  const sortedDates = Array.from(map.keys()).sort();
-
-  for (const dStr of sortedDates) {
-    const feed = map.get(dStr);
-    if (!feed || !feed.t || feed.t.length === 0) continue;
-    for (let i = 0; i < feed.t.length; i++) {
-      if (feed.t[i] === null || (feed.grid[i] === null && feed.load[i] === null)) continue;
-      const g = feed.grid[i] ?? 0;
-      const l = feed.load[i] ?? 0;
-      const b = feed.batt[i] ?? 0;
-      const isOff = Math.abs(g) <= 20 && (l > 20 || b > 50);
-      allPoints.push({ t: feed.t[i], isOff });
-    }
-  }
-
-  const events: ContinuousPowerEvent[] = [];
-  let cur: { isOff: boolean; start: number; end: number } | null = null;
-
-  for (let i = 0; i < allPoints.length; i++) {
-    const p = allPoints[i];
-    if (!cur) {
-      cur = { isOff: p.isOff, start: p.t, end: p.t };
-    } else if (cur.isOff === p.isOff && (p.t - cur.end) <= 45 * 60) {
-      cur.end = p.t;
-    } else {
-      events.push({
-        isOff: cur.isOff,
-        start: new Date(cur.start * 1000),
-        end: new Date(cur.end * 1000),
-        durationMinutes: Math.max(1, Math.round((cur.end - cur.start) / 60)),
-      });
-      cur = { isOff: p.isOff, start: p.t, end: p.t };
-    }
-  }
-
-  if (cur) {
-    events.push({
-      isOff: cur.isOff,
-      start: new Date(cur.start * 1000),
-      end: new Date(cur.end * 1000),
-      durationMinutes: Math.max(1, Math.round((cur.end - cur.start) / 60)),
-    });
-  }
-
-  return events;
-});
-
 // Build 24-hour rows by day for the matrix
 const monthGridMatrix = computed(() => {
   const map = monthGridFeeds.value;
@@ -854,47 +801,16 @@ const monthGridMatrix = computed(() => {
         const offMin = total > 0 ? Math.round((offCount / total) * 60) : 0;
         const pct = total > 0 ? Math.round((offCount / total) * 100) : 0;
 
-        // Find continuous interval covering this hour timestamp for instant hover tooltip
+        // Generate informative hourly tooltip
         let tooltip = `${dStr} ${h}:00`;
         if (cellStatus !== 'nodata') {
           if (cellStatus === 'partial') {
             const onMin = Math.max(0, 60 - offMin);
             tooltip = `🟡 ${h}:00–${h + 1}:00 • 🔴 ${offMin} ${t('minUnit')} | 🟢 ${onMin} ${t('minUnit')}`;
-          } else {
-            const targetTs = new Date(year, month - 1, d, h, 30).getTime() / 1000;
-            const hourStart = new Date(year, month - 1, d, h, 0).getTime() / 1000;
-            const hourEnd = new Date(year, month - 1, d, h + 1, 0).getTime() / 1000;
-
-            const isCellOff = cellStatus === 'off';
-            // First check if a continuous event strictly encompasses targetTs
-            let match = monthContinuousEvents.value.find(it => {
-              if (it.isOff !== isCellOff) return false;
-              const s = Math.floor(it.start.getTime() / 1000);
-              const e = Math.floor(it.end.getTime() / 1000);
-              return targetTs >= s && targetTs <= e;
-            });
-
-            // Fallback: check if continuous event overlaps this hour
-            if (!match) {
-              match = monthContinuousEvents.value.find(it => {
-                if (it.isOff !== isCellOff) return false;
-                const s = Math.floor(it.start.getTime() / 1000);
-                const e = Math.floor(it.end.getTime() / 1000);
-                return s < hourEnd && e > hourStart;
-              });
-            }
-
-            if (match) {
-              const icon = match.isOff ? '🔴' : '🟢';
-              const dur = formatDuration(match.durationMinutes);
-              const startFmt = formatFullDateTime(match.start);
-              const endFmt = formatFullDateTime(match.end);
-              tooltip = `${icon} ${startFmt} — ${endFmt} (${dur})`;
-            } else if (cellStatus === 'off') {
-              tooltip = `🔴 ${h}:00 — ${h + 1}:00 (60 ${t('minUnit')})`;
-            } else if (cellStatus === 'on') {
-              tooltip = `🟢 ${h}:00 — ${h + 1}:00 (60 ${t('minUnit')})`;
-            }
+          } else if (cellStatus === 'off') {
+            tooltip = `🔴 ${h}:00–${h + 1}:00 (60 ${t('minUnit')})`;
+          } else if (cellStatus === 'on') {
+            tooltip = `🟢 ${h}:00–${h + 1}:00 (60 ${t('minUnit')})`;
           }
         }
 
@@ -916,6 +832,70 @@ const monthGridMatrix = computed(() => {
   return days;
 });
 
+// Compute continuous events across days
+// A continuous blackout bridges across all consecutive hours with outages, including partial hours (>0 min off)
+const monthContinuousEvents = computed<ContinuousPowerEvent[]>(() => {
+  const matrix = monthGridMatrix.value;
+  if (!matrix || matrix.length === 0) return [];
+
+  const validCells: { cell: MonthGridHourCell; tsStart: number; tsEnd: number; isBlackout: boolean }[] = [];
+
+  for (const row of matrix) {
+    const [yStr, mStr, dStr] = row.dateStr.split('-');
+    const y = parseInt(yStr, 10);
+    const m = parseInt(mStr, 10) - 1;
+    const d = parseInt(dStr, 10);
+
+    for (const c of row.hours) {
+      if (c.status === 'nodata') continue;
+      const startMs = new Date(y, m, d, c.hour, 0, 0).getTime();
+      const endMs = startMs + 3600 * 1000;
+      // An hour counts towards continuous blackout if it has outage (full off OR partial off)
+      const isBlackout = c.status === 'off' || (c.status === 'partial' && c.offMinutes > 0);
+      validCells.push({
+        cell: c,
+        tsStart: Math.floor(startMs / 1000),
+        tsEnd: Math.floor(endMs / 1000),
+        isBlackout,
+      });
+    }
+  }
+
+  validCells.sort((a, b) => a.tsStart - b.tsStart);
+
+  const events: ContinuousPowerEvent[] = [];
+  let cur: { isOff: boolean; start: number; end: number; cells: MonthGridHourCell[] } | null = null;
+
+  for (let i = 0; i < validCells.length; i++) {
+    const item = validCells[i];
+    if (!cur) {
+      cur = { isOff: item.isBlackout, start: item.tsStart, end: item.tsEnd, cells: [item.cell] };
+    } else if (cur.isOff === item.isBlackout && (item.tsStart - cur.end) <= 3600) {
+      cur.end = item.tsEnd;
+      cur.cells.push(item.cell);
+    } else {
+      events.push({
+        isOff: cur.isOff,
+        start: new Date(cur.start * 1000),
+        end: new Date(cur.end * 1000),
+        durationMinutes: Math.max(1, Math.round((cur.end - cur.start) / 60)),
+      });
+      cur = { isOff: item.isBlackout, start: item.tsStart, end: item.tsEnd, cells: [item.cell] };
+    }
+  }
+
+  if (cur) {
+    events.push({
+      isOff: cur.isOff,
+      start: new Date(cur.start * 1000),
+      end: new Date(cur.end * 1000),
+      durationMinutes: Math.max(1, Math.round((cur.end - cur.start) / 60)),
+    });
+  }
+
+  return events;
+});
+
 const handleMatrixCellClick = (cell: MonthGridHourCell) => {
   if (cell.status === 'nodata') {
     selectedMatrixEvent.value = {
@@ -925,21 +905,6 @@ const handleMatrixCellClick = (cell: MonthGridHourCell) => {
       startStr: `${cell.hour}:00`,
       endStr: `${cell.hour + 1}:00`,
       durationStr: t('history.matrixNoData'),
-      crossesMidnight: false,
-    };
-    return;
-  }
-
-  // If it's a partial hour, present the breakdown of off vs on minutes
-  if (cell.status === 'partial') {
-    const onMin = Math.max(0, 60 - cell.offMinutes);
-    selectedMatrixEvent.value = {
-      type: 'partial',
-      day: cell.day,
-      hour: cell.hour,
-      startStr: `${cell.hour}:00`,
-      endStr: `${cell.hour + 1}:00`,
-      durationStr: `🔴 ${cell.offMinutes} ${t('minUnit')} | 🟢 ${onMin} ${t('minUnit')}`,
       crossesMidnight: false,
     };
     return;
@@ -957,13 +922,24 @@ const handleMatrixCellClick = (cell: MonthGridHourCell) => {
   if (match) {
     const crosses = match.start.toDateString() !== match.end.toDateString();
     selectedMatrixEvent.value = {
-      type: match.isOff ? 'off' : 'on',
+      type: match.isOff ? 'off' : (cell.status === 'partial' ? 'partial' : 'on'),
       day: cell.day,
       hour: cell.hour,
       startStr: formatFullDateTime(match.start),
       endStr: formatFullDateTime(match.end),
       durationStr: formatDuration(match.durationMinutes),
       crossesMidnight: crosses,
+    };
+  } else if (cell.status === 'partial') {
+    const onMin = Math.max(0, 60 - cell.offMinutes);
+    selectedMatrixEvent.value = {
+      type: 'partial',
+      day: cell.day,
+      hour: cell.hour,
+      startStr: `${cell.hour}:00`,
+      endStr: `${cell.hour + 1}:00`,
+      durationStr: `🔴 ${cell.offMinutes} ${t('minUnit')} | 🟢 ${onMin} ${t('minUnit')}`,
+      crossesMidnight: false,
     };
   } else {
     selectedMatrixEvent.value = {
