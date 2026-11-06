@@ -308,7 +308,6 @@ const fetchSingleTelemetry = async (meta: StationMetadata) => {
 };
 
 const fetchAllTelemetries = async () => {
-  updateComplexBlackoutDuration().catch(() => {});
   refreshing.value = true;
   // Fetch all station telemetries in parallel first
   const results = await Promise.allSettled(
@@ -335,6 +334,7 @@ const fetchAllTelemetries = async () => {
   });
   loading.value = false;
   refreshing.value = false;
+  await updateComplexBlackoutDuration().catch(() => {});
 };
 
 const handleManualRefresh = async () => {

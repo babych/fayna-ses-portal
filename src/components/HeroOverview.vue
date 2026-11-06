@@ -164,7 +164,7 @@ const estimatedEndTimeDisplay = computed(() => {
               stats.blackoutStatus === 'full' 
                 ? (stats.blackoutDurationMinutes && stats.blackoutDurationMinutes > 0 ? t('gridBlackoutWithDuration', { duration: formatDuration(stats.blackoutDurationMinutes) }) : t('gridBlackout'))
                 : stats.blackoutStatus === 'partial'
-                  ? t('gridPartialBlackout', { count: stats.blackoutCount, total: stats.onlineStations })
+                  ? (stats.blackoutDurationMinutes && stats.blackoutDurationMinutes > 0 ? t('gridPartialBlackoutWithDuration', { duration: formatDuration(stats.blackoutDurationMinutes) }) : t('gridPartialBlackout', { count: stats.blackoutCount, total: stats.onlineStations }))
                   : t('gridNormal') 
             }}
           </span>

@@ -234,5 +234,6 @@
     "showLine": "Show line",
     "hideLine": "Hide line",
     "backToTrends": "← Back to trends"
-  }
+  },
+  "gridPartialBlackoutWithDuration": "Partial Outage ({duration})"
 }

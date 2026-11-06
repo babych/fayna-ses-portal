@@ -234,5 +234,6 @@
     "showLine": "Показати лінію",
     "hideLine": "Приховати лінію",
     "backToTrends": "← До спільних трендів"
-  }
+  },
+  "gridPartialBlackoutWithDuration": "Частковий блекаут ({duration})"
 }
