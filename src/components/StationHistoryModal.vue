@@ -160,7 +160,8 @@ const navigateDay = async (delta: number) => {
 const loadMonthData = async (monthStr: string) => {
   if (!props.station) return;
   const cacheKey = `${props.station.id}:${monthStr}`;
-  if (singleMonthDataCache.has(cacheKey)) {
+  const isCurrentMonth = monthStr === getLocalMonthStr();
+  if (!isCurrentMonth && singleMonthDataCache.has(cacheKey)) {
     monthHistory.value = singleMonthDataCache.get(cacheKey);
     return;
   }

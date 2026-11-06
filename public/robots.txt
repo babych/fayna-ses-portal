@@ -1,4 +1,2 @@
 User-agent: *
-Allow: /
-
-Sitemap: https://fayna-ses-cq2.pages.dev/sitemap.xml
+Disallow: /

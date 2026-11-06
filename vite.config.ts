@@ -63,7 +63,30 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         importScripts: ['/custom-sw.js'],
         runtimeCaching: [
-          // 1. Immutable Historical Data (Past Days & Past Months): CacheFirst for 1 Year!
+          // 1. Current Day & Current Month (Dynamic / Appended Daily): NetworkFirst
+          {
+            urlPattern: ({ url }) => {
+              const now = new Date();
+              const yyyy = now.getFullYear();
+              const mm = String(now.getMonth() + 1).padStart(2, '0');
+              const dd = String(now.getDate()).padStart(2, '0');
+              const currentMonth = `${yyyy}-${mm}`;
+              const currentDay = `${yyyy}-${mm}-${dd}`;
+              return url.pathname.endsWith(`/month/${currentMonth}.json`) || url.pathname.endsWith(`/day/${currentDay}.json`);
+            },
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'ses-current-period-cache',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 300 // 5 minutes
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          // 2. Immutable Historical Data (Past Days & Past Months): CacheFirst for 1 Year!
           {
             urlPattern: /\/(day\/\d{4}-\d{2}-\d{2}|month\/\d{4}-\d{2})\.json$/i,
             handler: 'CacheFirst',
@@ -78,7 +101,7 @@ export default defineConfig({
               }
             }
           },
-          // 2. Real-time Live Feeds (today.json, station.json): NetworkFirst with 5 min fallback
+          // 3. Real-time Live Feeds (today.json, station.json): NetworkFirst with 5 min fallback
           {
             urlPattern: /^https:\/\/(data-ses\.funs\.net\.ua|.*\/api)\/.*/i,
             handler: 'NetworkFirst',
