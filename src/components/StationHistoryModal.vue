@@ -151,7 +151,23 @@ const loadDayData = async (dateStr: string) => {
   loadPriorDayData(dateStr).catch(() => {});
   const todayStr = getLocalDateStr();
   if (dateStr === todayStr) {
-    selectedDayFeed.value = null; // Use live props.station.history
+    // If live station history is available, use it directly
+    if (props.station.history && props.station.history.timestamps && props.station.history.timestamps.length > 0) {
+      selectedDayFeed.value = null;
+      return;
+    }
+    // Otherwise fetch today.json directly so refresh works even before all background feeds resolve
+    loading.value = true;
+    errorMessage.value = null;
+    try {
+      const feed = await fetchTodayFeed(props.station.id);
+      selectedDayFeed.value = feed;
+    } catch (err) {
+      errorMessage.value = 'Failed to load today telemetry.';
+      selectedDayFeed.value = null;
+    } finally {
+      loading.value = false;
+    }
     return;
   }
 
@@ -342,10 +358,19 @@ const loadData = async () => {
 
   if (mode.value === 'blackouts' && blackoutSubTab.value === 'month') {
     await loadMonthData(selectedMonth.value);
-  } else if (isHistoryDay.value && !selectedDayFeed.value) {
-    await loadDayData(selectedDate.value);
+  } else if (isHistoryDay.value) {
+    if (!selectedDayFeed.value) {
+      await loadDayData(selectedDate.value);
+    } else {
+      loadPriorDayData(selectedDate.value).catch(() => {});
+    }
   } else {
-    loadPriorDayData(selectedDate.value).catch(() => {});
+    // Current day: if station has no live history loaded yet, fetch today feed directly
+    if (!props.station.history || !props.station.history.timestamps || !props.station.history.timestamps.length) {
+      await loadDayData(selectedDate.value);
+    } else {
+      loadPriorDayData(selectedDate.value).catch(() => {});
+    }
   }
 };
 
