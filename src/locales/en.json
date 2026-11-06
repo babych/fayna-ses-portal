@@ -194,6 +194,10 @@
     "e64791f0a8f89a5400db11c0f8c82c57": {
       "name": "HOA #6, Building 18, Entrance 8 - Elevator",
       "description": "Elevator backup power, Building 18, Entrance 8"
+    },
+    "dee052e69e8fa101de2f002f53a964e2": {
+      "name": "HOA #6, Building 19, Entrance 1",
+      "description": "Station serves all of building 19"
     }
   },
   "loadModeBattery": "Powered by Battery",
