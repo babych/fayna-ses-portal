@@ -28,14 +28,20 @@ import HeroOverview from '@/components/HeroOverview.vue';
 import StationCard from '@/components/StationCard.vue';
 
 // Lazy load all modals so their markup, validation and icons don't block initial page render
-const AddStationModal = defineAsyncComponent(() => import('@/components/AddStationModal.vue'));
-const PwaInstallModal = defineAsyncComponent(() => import('@/components/PwaInstallModal.vue'));
+const loadAddStationModal = () => import('@/components/AddStationModal.vue');
+const AddStationModal = defineAsyncComponent(loadAddStationModal);
+const preloadAddStationModal = () => { loadAddStationModal().catch(() => {}); };
+const loadPwaInstallModal = () => import('@/components/PwaInstallModal.vue');
+const PwaInstallModal = defineAsyncComponent(loadPwaInstallModal);
+const preloadPwaInstallModal = () => { loadPwaInstallModal().catch(() => {}); };
 const loadStationHistoryModal = () => import('@/components/StationHistoryModal.vue');
 const StationHistoryModal = defineAsyncComponent(loadStationHistoryModal);
 const preloadStationHistoryModal = () => {
   loadStationHistoryModal().catch(() => {});
 };
-const PushNotificationModal = defineAsyncComponent(() => import('@/components/PushNotificationModal.vue'));
+const loadPushNotificationModal = () => import('@/components/PushNotificationModal.vue');
+const PushNotificationModal = defineAsyncComponent(loadPushNotificationModal);
+const preloadPushNotificationModal = () => { loadPushNotificationModal().catch(() => {}); };
 const loadComplexOutagesModal = () => import('@/components/ComplexOutagesModal.vue');
 const ComplexOutagesModal = defineAsyncComponent(loadComplexOutagesModal);
 const preloadComplexOutagesModal = () => {
@@ -216,8 +222,11 @@ const onModalMonthChange = (month: string) => {
 };
 
 const openAddModal = () => {
-  isAddModalOpen.value = true;
-  updateUrlState();
+  preloadAddStationModal();
+  requestAnimationFrame(() => {
+    isAddModalOpen.value = true;
+    updateUrlState();
+  });
 };
 
 const closeAddModal = () => {
@@ -245,8 +254,11 @@ const onComplexOutagesDateChange = (date: string) => {
 };
 
 const openPwaModal = () => {
-  isPwaModalOpen.value = true;
-  updateUrlState();
+  preloadPwaInstallModal();
+  requestAnimationFrame(() => {
+    isPwaModalOpen.value = true;
+    updateUrlState();
+  });
 };
 
 const closePwaModal = () => {
@@ -928,6 +940,8 @@ const handleModalDirectInstall = async () => {
           <!-- Push Notifications Button -->
           <button
             @click="isPushModalOpen = true"
+            @pointerenter="preloadPushNotificationModal"
+            @focus="preloadPushNotificationModal"
             class="p-1.5 sm:p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-emerald-700 transition-all border border-slate-200 shrink-0"
             :title="t('notifications')"
           >
@@ -948,6 +962,8 @@ const handleModalDirectInstall = async () => {
           <button 
             v-if="!isStandalone"
             @click="handleInstallClick"
+            @pointerenter="preloadPwaInstallModal"
+            @focus="preloadPwaInstallModal"
             class="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-500 transition-all shadow-md shadow-emerald-600/20"
             :title="t('installApp')"
           >
@@ -969,6 +985,8 @@ const handleModalDirectInstall = async () => {
           <!-- Add Station -->
           <button 
             @click="openAddModal"
+            @pointerenter="preloadAddStationModal"
+            @focus="preloadAddStationModal"
             class="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-xs font-bold transition-all shadow-sm"
           >
             <Plus class="w-4 h-4 text-emerald-400" />

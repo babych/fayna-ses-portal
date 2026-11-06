@@ -126,6 +126,8 @@ const estimatedEndTimeDisplay = computed(() => {
       <button 
         type="button"
         @click="emit('open-complex-outages')"
+        @pointerenter="import('@/components/ComplexOutagesModal.vue').catch(() => {})"
+        @focus="import('@/components/ComplexOutagesModal.vue').catch(() => {})"
         :title="t('complexOutages.buttonTooltip')"
         class="flex items-center gap-3 px-4 py-2.5 rounded-2xl border transition-colors duration-200 shrink-0 w-full md:w-[290px] h-[60px] text-left cursor-pointer group focus:outline-none focus:ring-2 focus:ring-nordic-terracotta-500/20"
         :class="loading && stats.totalBuildingPowerW === 0
