@@ -132,7 +132,8 @@
     "tooltipOutage": "Outage: {time}",
     "tooltipWithPower": "Power was on: {time}",
     "tooltipNoOutage": "Power on for the whole hour (60 min)",
-    "blackoutsMonthTitle": "Monthly Outage Analytics & History"
+    "blackoutsMonthTitle": "Monthly Outage Analytics & History",
+    "chartSolar": "Solar Generation (W)"
   },
   "addModal": {
     "title": "Add New Station",

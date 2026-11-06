@@ -7,6 +7,7 @@ const { t } = useI18n();
 
 defineProps<{
   solarPower: number;
+  hasPv?: boolean;
   gridPower: number;
   batteryPower: number;
   buildingPower: number;
@@ -32,10 +33,10 @@ const formatW = (watts: number) => {
     <!-- Grid items layout: fixed 3 columns by default, expanding to 4 only when solar generates -->
     <div 
       class="relative z-10 grid gap-2 text-center transition-all duration-300"
-      :class="solarPower > 50 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'"
+      :class="(solarPower > 50 || hasPv) ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'"
     >
       <!-- 1. Solar (Only if generating > 0) -->
-      <div v-if="solarPower > 50" class="flex flex-col items-center p-2 rounded-xl bg-white border border-slate-200/80 shadow-xs h-[102px] box-border justify-between overflow-hidden">
+      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-2 rounded-xl bg-white border border-slate-200/80 shadow-xs h-[102px] box-border justify-between overflow-hidden">
         <div class="flex flex-col items-center">
           <div class="p-1.5 rounded-xl bg-amber-50 text-amber-500 mb-1">
             <Sun class="w-4 h-4" />

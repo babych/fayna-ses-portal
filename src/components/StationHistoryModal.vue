@@ -1157,6 +1157,7 @@ const dayChartData = computed(() => {
   const socData: number[] = [];
   const gridData: number[] = [];
   const loadData: number[] = [];
+  const pvData: number[] = [];
 
   const step = Math.max(1, Math.floor(timestamps.length / 80));
 
@@ -1166,6 +1167,7 @@ const dayChartData = computed(() => {
     socData.push(feed.soc[i] ?? 0);
     gridData.push(feed.grid[i] ?? 0);
     loadData.push(feed.load[i] ?? 0);
+    pvData.push(feed.pv ? (feed.pv[i] ?? 0) : 0);
   }
 
   // Always ensure the very latest telemetry sample is included on the chart
@@ -1176,6 +1178,7 @@ const dayChartData = computed(() => {
     socData.push(feed.soc[lastIndex] ?? 0);
     gridData.push(feed.grid[lastIndex] ?? 0);
     loadData.push(feed.load[lastIndex] ?? 0);
+    pvData.push(feed.pv ? (feed.pv[lastIndex] ?? 0) : 0);
   }
 
   return {
@@ -1212,6 +1215,17 @@ const dayChartData = computed(() => {
         pointRadius: 0,
         borderWidth: 1.5,
       },
+      ...((props.station?.pvKw ?? 0) > 0 || pvData.some(v => v > 0) ? [{
+        label: t('history.chartSolar'),
+        data: pvData,
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245, 158, 11, 0.12)',
+        yAxisID: 'yPower',
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2,
+        fill: true,
+      }] : []),
     ],
   };
 });

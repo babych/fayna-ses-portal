@@ -76,7 +76,7 @@ const formatTimeAgo = (seconds: number) => {
           <p class="text-xs text-slate-500 mt-0.5 min-h-[16px] truncate">
             {{ getStationDesc(station) || 'Power station' }}
           </p>
-          <div class="flex items-center gap-1.5 mt-1.5 flex-nowrap overflow-hidden min-h-[22px] h-[22px]">
+          <div class="flex items-center gap-1.5 mt-2 flex-wrap min-h-[22px]">
             <span v-if="station.inverterKw > 0" class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200 shrink-0">
               ⚡ {{ t('history.inverter') }}: {{ station.inverterKw }} {{ t('kwUnit') }}
             </span>
@@ -87,7 +87,7 @@ const formatTimeAgo = (seconds: number) => {
               🔋 {{ station.batteryKwh }} {{ t('kwhUnit') }}
             </span>
             <span v-if="station.pvKw > 0" class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
-              ☀️ {{ t('history.pvPower') }}: {{ station.pvKw }} {{ t('kwUnit') }}
+              ☀️ {{ station.pvKw }} {{ t('kwUnit') }}
             </span>
           </div>
         </div>
@@ -120,6 +120,7 @@ const formatTimeAgo = (seconds: number) => {
 
       <PowerFlowCard
         :solar-power="station.solarPower"
+        :has-pv="station.pvKw > 0"
         :grid-power="station.gridPower"
         :battery-power="station.batteryPower"
         :building-power="station.buildingPower"

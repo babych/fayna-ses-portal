@@ -132,7 +132,8 @@
     "tooltipOutage": "Без світла: {time}",
     "tooltipWithPower": "Світло було: {time}",
     "tooltipNoOutage": "Світло було всю годину (60 хв)",
-    "blackoutsMonthTitle": "Історія відключень світла за місяць"
+    "blackoutsMonthTitle": "Історія відключень світла за місяць",
+    "chartSolar": "Генерація СЕС (Вт)"
   },
   "addModal": {
     "title": "Додати нову станцію",
