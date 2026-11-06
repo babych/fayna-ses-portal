@@ -681,15 +681,41 @@ const dayBlackoutData = computed(() => {
   return { intervals: intervals.reverse(), totalMinutes, hourlyLevels, hourlyMinutes, hourlyStats };
 });
 
-// Monthly chart
-const monthBlackoutChartData = computed(() => {
+// Monthly chart data with live day integration for ongoing current month
+const activeMonthData = computed(() => {
   if (!monthHistory.value || !monthHistory.value.days) {
+    return null;
+  }
+  const isCurrentMonth = selectedMonth.value === getLocalMonthStr();
+  const days: number[] = [...(monthHistory.value.days || [])];
+  const gridArr: number[] = [...(monthHistory.value.grid || [])];
+  const loadArr: number[] = [...(monthHistory.value.load || [])];
+  const pvArr: number[] = [...(monthHistory.value.pv || [])];
+
+  if (isCurrentMonth && props.station) {
+    const todayNum = new Date().getDate();
+    if (!days.includes(todayNum)) {
+      const todayLoad = Number(props.station.buildingEnergyTodayKwh ?? 0);
+      const todayGrid = Number(props.station.gridEnergyTodayKwh ?? 0);
+      days.push(todayNum);
+      loadArr.push(todayLoad);
+      gridArr.push(todayGrid);
+      pvArr.push(0);
+    }
+  }
+
+  return { days, gridArr, loadArr, pvArr };
+});
+
+const monthBlackoutChartData = computed(() => {
+  const mData = activeMonthData.value;
+  if (!mData || !mData.days) {
     return { labels: [], datasets: [] };
   }
 
-  const days = monthHistory.value.days;
-  const gridArr = monthHistory.value.grid || [];
-  const loadArr = monthHistory.value.load || [];
+  const days = mData.days;
+  const gridArr = mData.gridArr;
+  const loadArr = mData.loadArr;
 
   const blackoutBatteryKwh = days.map((_: number, idx: number) => {
     const l = loadArr[idx] || 0;
@@ -1288,12 +1314,13 @@ const monthChartData = computed(() => {
 
 // Monthly totals
 const monthTotals = computed(() => {
-  if (!monthHistory.value) {
-    return { load: 0, grid: 0, pv: 0, blackoutBattery: 0 };
+  const mData = activeMonthData.value;
+  if (!mData) {
+    return { load: 0, grid: 0, pv: 0, battery: 0, blackoutBattery: 0 };
   }
-  const loadArr: number[] = monthHistory.value.load || [];
-  const gridArr: number[] = monthHistory.value.grid || [];
-  const pvArr: number[] = monthHistory.value.pv || [];
+  const loadArr: number[] = mData.loadArr || [];
+  const gridArr: number[] = mData.gridArr || [];
+  const pvArr: number[] = mData.pvArr || [];
 
   const totalLoad = Math.round(loadArr.reduce((sum, v) => sum + (v || 0), 0) * 10) / 10;
   const totalGrid = Math.round(gridArr.reduce((sum, v) => sum + (v || 0), 0) * 10) / 10;
@@ -1314,6 +1341,24 @@ const monthTotals = computed(() => {
     pv: totalPv,
     battery: batterySupplied,
     blackoutBattery: batterySupplied,
+  };
+});
+
+// Monthly blackout analytics totals
+const monthBlackoutTotals = computed(() => {
+  const matrix = monthGridMatrix.value;
+  let totalMinutes = 0;
+  for (const row of matrix) {
+    for (const cell of row.hours) {
+      if (cell.status !== 'nodata') {
+        totalMinutes += cell.offMinutes;
+      }
+    }
+  }
+  const blackoutIntervalsCount = monthContinuousEvents.value.filter(e => e.isOff).length;
+  return {
+    totalMinutes,
+    intervalsCount: blackoutIntervalsCount,
   };
 });
 
@@ -1760,6 +1805,33 @@ const selectedDayMetrics = computed(() => {
         <!-- MONTHLY BLACKOUT VIEW -->
         <template v-else>
           <div class="space-y-4">
+            <!-- Outage totals for the month: Total outage time & Outage count -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-4 rounded-2xl bg-nordic-terracotta-50 border border-nordic-terracotta-100 flex items-center gap-4">
+                <div class="p-3 rounded-xl bg-nordic-terracotta-100 text-nordic-terracotta-600">
+                  <Clock class="w-6 h-6" />
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500 block">{{ t('history.totalBlackoutTime') }}</span>
+                  <span class="text-2xl font-black text-nordic-terracotta-700">
+                    {{ Math.floor(monthBlackoutTotals.totalMinutes / 60) }}h {{ monthBlackoutTotals.totalMinutes % 60 }}m
+                  </span>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center gap-4">
+                <div class="p-3 rounded-xl bg-slate-200 text-slate-700">
+                  <AlertTriangle class="w-6 h-6" />
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500 block">{{ t('history.blackoutCount') }}</span>
+                  <span class="text-2xl font-black text-slate-800">
+                    {{ monthBlackoutTotals.intervalsCount }} {{ t('history.times') }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <!-- Monthly Summary Cards for Blackouts (4 metrics in grid) -->
             <div 
               class="grid gap-3"
