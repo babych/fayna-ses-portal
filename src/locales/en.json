@@ -256,5 +256,6 @@
   "drainedStatus": "Drained (0%)",
   "drainedTag": "Drained to 0%",
   "drainedAutonomy": "Battery drained",
-  "sourceDrained": "Outage (Battery drained)"
+  "sourceDrained": "Outage (Battery drained)",
+  "dUnit": "d"
 }

@@ -256,5 +256,6 @@
   "drainedStatus": "Розряджено (0%)",
   "drainedTag": "Розряджено в 0%",
   "drainedAutonomy": "АКБ розряджено",
-  "sourceDrained": "Знеструмлено (АКБ виснажено)"
+  "sourceDrained": "Знеструмлено (АКБ виснажено)",
+  "dUnit": "д"
 }

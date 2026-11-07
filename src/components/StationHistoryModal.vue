@@ -799,6 +799,18 @@ const formatFullDateTime = (d: Date) => {
 };
 
 const formatDuration = (totalMinutes: number) => {
+  if (totalMinutes >= 1440) {
+    const days = Math.floor(totalMinutes / 1440);
+    const remMinutes = totalMinutes % 1440;
+    const h = Math.floor(remMinutes / 60);
+    const m = remMinutes % 60;
+    const totalHours = Math.floor(totalMinutes / 60);
+    const parts = [`${days}${t('dUnit')}`];
+    if (h > 0) parts.push(`${h}${t('hUnit')}`);
+    if (m > 0) parts.push(`${m}${t('minUnit')}`);
+    const hourSuffix = m > 0 ? ` ${m}${t('minUnit')}` : '';
+    return `${parts.join(' ')} (${totalHours}${t('hUnit')}${hourSuffix})`;
+  }
   const h = Math.floor(totalMinutes / 60);
   const m = totalMinutes % 60;
   if (h > 0 && m > 0) {
