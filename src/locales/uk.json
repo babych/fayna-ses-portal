@@ -213,9 +213,9 @@
       "description": "Станція обслуговує будинок 24, 4-5 під'їзди"
     }
   },
-  "loadModeBattery": "Живлення від АКБ",
-  "loadModeCharging": "Заряджання батарей",
-  "loadModeGrid": "Мережа активна",
+  "loadModeBattery": "АКБ",
+  "loadModeCharging": "Заряд",
+  "loadModeGrid": "Мережа",
   "notifications": "Сповіщення",
   "pushModal": {
     "title": "Сповіщення про блекаути",

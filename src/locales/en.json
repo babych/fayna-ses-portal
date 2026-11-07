@@ -213,8 +213,8 @@
       "description": "Station serves building 24, entrances 4-5"
     }
   },
-  "loadModeBattery": "Powered by Battery",
-  "loadModeCharging": "Batteries Charging",
+  "loadModeBattery": "Battery",
+  "loadModeCharging": "Charging",
   "loadModeGrid": "Grid Normal",
   "notifications": "Notifications",
   "pushModal": {
