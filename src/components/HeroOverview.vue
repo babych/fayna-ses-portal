@@ -291,19 +291,29 @@ const estimatedEndTimeDisplay = computed(() => {
 
           <div class="flex items-center h-[38px] md:h-[42px] min-w-0">
             <div v-if="loading && stats.totalBuildingPowerW === 0" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1.5 flex-nowrap min-w-0">
+            <div v-else class="flex items-baseline gap-2 min-w-0">
               <span class="text-2xl sm:text-3xl font-black leading-none whitespace-nowrap tabular-nums shrink-0" :class="buildingLoadDisplay.textColor">
                 {{ buildingLoadDisplay.value }}
               </span>
-              <span class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md border whitespace-nowrap shrink-0" :class="buildingLoadDisplay.badgeClass">
+              <!-- On desktop: badge inline next to number -->
+              <span class="hidden md:inline-flex text-[10px] font-bold px-1.5 py-0.5 rounded-md border whitespace-nowrap shrink-0" :class="buildingLoadDisplay.badgeClass">
                 {{ buildingLoadDisplay.badge }}
               </span>
             </div>
           </div>
         </div>
-        <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate h-4 leading-4">
-          {{ t('loadSub') }}
-        </p>
+
+        <div class="shrink-0 min-w-0 flex flex-col justify-end leading-tight min-h-[30px] md:min-h-0">
+          <!-- On mobile: badge on line 3 so it never gets clipped -->
+          <div class="md:hidden flex items-center justify-between gap-1 leading-tight mb-0.5">
+            <span class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md border whitespace-nowrap shrink-0" :class="buildingLoadDisplay.badgeClass">
+              {{ buildingLoadDisplay.badge }}
+            </span>
+          </div>
+          <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate h-4 leading-4">
+            {{ t('loadSub') }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
