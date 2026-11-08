@@ -190,21 +190,23 @@ const estimatedEndTimeDisplay = computed(() => {
 
           <div class="flex items-center h-[42px] min-w-0">
             <div v-if="loading && stats.averageBatteryLevel === 0" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap min-w-0 overflow-hidden">
-              <span class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums shrink-0">
+            <div v-else class="flex items-baseline min-w-0">
+              <span class="text-2xl sm:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums shrink-0">
                 {{ Math.round(stats.averageBatteryLevel) }}%
-              </span>
-              <span class="text-[10px] sm:text-[11px] md:text-xs text-slate-500 font-semibold truncate whitespace-nowrap min-w-0">
-                {{ stats.currentStoredEnergyKwh.toFixed(1) }} / {{ stats.totalBatteryCapacityKwh }} {{ t('kwhUnit') }}
               </span>
             </div>
           </div>
         </div>
-        <div class="w-full h-2 rounded-full bg-slate-200 mt-2 overflow-hidden shrink-0">
-          <div 
-            class="h-full bg-gradient-to-r from-nordic-green-500 to-nordic-green-600 rounded-full transition-all duration-500"
-            :style="{ width: `${stats.averageBatteryLevel}%` }"
-          ></div>
+        <div class="shrink-0">
+          <div class="text-[10px] sm:text-[11px] font-semibold text-slate-500 mb-1 leading-tight truncate tabular-nums">
+            {{ stats.currentStoredEnergyKwh.toFixed(1) }} / {{ stats.totalBatteryCapacityKwh }} {{ t('kwhUnit') }}
+          </div>
+          <div class="w-full h-1.5 rounded-full bg-slate-200 overflow-hidden">
+            <div 
+              class="h-full bg-gradient-to-r from-nordic-green-500 to-nordic-green-600 rounded-full transition-all duration-500"
+              :style="{ width: `${stats.averageBatteryLevel}%` }"
+            ></div>
+          </div>
         </div>
       </div>
 
@@ -218,30 +220,33 @@ const estimatedEndTimeDisplay = computed(() => {
 
           <div class="flex items-center h-[42px] min-w-0">
             <div v-if="loading && stats.estimatedComplexAutonomyHours === null" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap min-w-0 overflow-hidden">
-              <span class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums shrink-0">
+            <div v-else class="flex items-baseline gap-1.5 min-w-0">
+              <span class="text-2xl sm:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums shrink-0">
                 {{ stats.estimatedComplexAutonomyHours !== null ? `~${stats.estimatedComplexAutonomyHours}h` : '—' }}
               </span>
-              <div class="flex flex-col ml-0.5 leading-tight min-w-0 overflow-hidden">
-                <span class="text-[9px] sm:text-[10px] md:text-[11px] text-slate-500 font-medium whitespace-nowrap truncate">
-                  {{ stats.isBlackout ? t('underDischarge') : t('inReserve') }}
-                </span>
-                <span 
-                  class="text-[9px] sm:text-[10px] md:text-[11px] text-nordic-ochre-700 font-bold whitespace-nowrap h-[14px] leading-tight transition-opacity duration-300 truncate"
-                  :class="estimatedEndTimeDisplay ? 'opacity-100' : 'opacity-0'"
-                >
-                  {{ estimatedEndTimeDisplay || '—' }}
-                </span>
-              </div>
+              <span class="text-[10px] sm:text-[11px] text-slate-500 font-medium whitespace-nowrap truncate min-w-0">
+                {{ stats.isBlackout ? t('underDischarge') : t('inReserve') }}
+              </span>
             </div>
           </div>
         </div>
-        <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 font-medium truncate h-4 leading-4">
-          {{ stats.totalBuildingPowerW > 0 
-            ? t('totalCapacityWithLoad', { kwh: stats.totalBatteryCapacityKwh, kw: (stats.totalBuildingPowerW / 1000).toFixed(2) })
-            : t('totalCapacity', { kwh: stats.totalBatteryCapacityKwh }) 
-          }}
-        </p>
+        <div class="shrink-0 h-4 leading-4 flex items-center min-w-0">
+          <span 
+            v-if="estimatedEndTimeDisplay"
+            class="text-[10px] sm:text-[11px] text-nordic-ochre-700 font-bold whitespace-nowrap truncate leading-none"
+          >
+            {{ estimatedEndTimeDisplay }}
+          </span>
+          <span 
+            v-else
+            class="text-[10px] sm:text-[11px] text-slate-400 font-medium whitespace-nowrap truncate leading-none"
+          >
+            {{ stats.totalBuildingPowerW > 0 
+              ? t('totalCapacityWithLoad', { kwh: stats.totalBatteryCapacityKwh, kw: (stats.totalBuildingPowerW / 1000).toFixed(2) })
+              : t('totalCapacity', { kwh: stats.totalBatteryCapacityKwh }) 
+            }}
+          </span>
+        </div>
       </div>
 
       <!-- 3. Solar Generation (Displayed if station has PV installed or generation > 0) -->
@@ -253,14 +258,14 @@ const estimatedEndTimeDisplay = computed(() => {
           </div>
           <div class="flex items-center h-[42px] min-w-0">
             <div v-if="loading && stats.totalSolarPowerW === 0 && stats.totalBuildingPowerW === 0" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap min-w-0 overflow-hidden">
-              <span class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-none tabular-nums whitespace-nowrap">
+            <div v-else class="flex items-baseline min-w-0">
+              <span class="text-2xl sm:text-3xl font-black text-slate-900 leading-none tabular-nums whitespace-nowrap">
                 {{ formatPower(stats.totalSolarPowerW) }}
               </span>
             </div>
           </div>
         </div>
-        <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 font-medium truncate h-4 leading-4">
+        <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate h-4 leading-4">
           {{ t('solarSub') }}
         </p>
       </div>
@@ -275,8 +280,8 @@ const estimatedEndTimeDisplay = computed(() => {
 
           <div class="flex items-center h-[42px] min-w-0">
             <div v-if="loading && stats.totalBuildingPowerW === 0" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap min-w-0 overflow-hidden">
-              <span class="text-xl sm:text-2xl md:text-3xl font-black leading-none whitespace-nowrap tabular-nums shrink-0" :class="buildingLoadDisplay.textColor">
+            <div v-else class="flex items-baseline gap-1.5 flex-nowrap min-w-0">
+              <span class="text-2xl sm:text-3xl font-black leading-none whitespace-nowrap tabular-nums shrink-0" :class="buildingLoadDisplay.textColor">
                 {{ buildingLoadDisplay.value }}
               </span>
               <span class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md border whitespace-nowrap shrink-0" :class="buildingLoadDisplay.badgeClass">
@@ -285,7 +290,7 @@ const estimatedEndTimeDisplay = computed(() => {
             </div>
           </div>
         </div>
-        <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 font-medium truncate h-4 leading-4">
+        <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate h-4 leading-4">
           {{ t('loadSub') }}
         </p>
       </div>

@@ -57,16 +57,11 @@ body {
   animation: refresh-wiggle 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Refreshing values fade effect: subtle opacity dip with smooth return */
+/* No persistent opacity transition to avoid flashing on initial page render */
 .is-refreshing-data .tabular-nums,
 .is-refreshing-data [data-refresh-target] {
   opacity: 0.38;
   transition: opacity 200ms ease-out;
-}
-
-.tabular-nums,
-[data-refresh-target] {
-  transition: opacity 350ms ease-in-out;
 }
 
 /* --- Graphite Theme (Original infographic dark graphite palette) --- */

@@ -1,6 +1,23 @@
 <!doctype html>
 <html lang="en" class="light">
   <head>
+    <!-- Instant Theme Initialization to prevent white flash (Zero-FOUC) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('fayna_theme');
+          var isDark = saved === 'graphite' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.setAttribute('data-theme', 'graphite');
+            document.documentElement.style.backgroundColor = '#16191f';
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.documentElement.style.backgroundColor = '#f8fafc';
+          }
+        } catch (_) {}
+      })();
+    </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fayna SES — Energy &amp; Battery Storage Portal (Fayna Town)</title>
