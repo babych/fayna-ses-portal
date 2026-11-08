@@ -103,7 +103,7 @@ const estimatedEndTimeDisplay = computed(() => {
 </script>
 
 <template>
-  <div class="relative w-full rounded-xl bg-white border border-slate-200/90 p-6 md:p-8 shadow-sm">
+  <div class="relative w-full rounded-xl bg-white border border-slate-200/90 p-4 sm:p-6 md:p-8 shadow-sm">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-100">
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
@@ -177,24 +177,24 @@ const estimatedEndTimeDisplay = computed(() => {
 
     <!-- Key Metrics -->
     <div 
-      class="grid gap-3 sm:gap-4 md:gap-6 pt-6"
+      class="grid gap-2.5 sm:gap-4 md:gap-6 pt-5 sm:pt-6"
       :class="(hasSolar || stats.totalSolarPowerW > 50) ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'"
     >
       <!-- 1. Battery SoC -->
-      <div class="p-3.5 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border overflow-hidden">
-        <div>
-          <div class="flex items-center gap-1.5 text-slate-500 text-xs font-bold mb-1">
-            <Battery class="w-4 h-4 text-nordic-green-600 shrink-0" />
+      <div class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border overflow-hidden">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 text-slate-500 text-[11px] sm:text-xs font-bold mb-1">
+            <Battery class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-nordic-green-600 shrink-0" />
             <span class="truncate">{{ t('avgBattery') }}</span>
           </div>
 
-          <div class="flex items-center h-[42px]">
-            <div v-if="loading && stats.averageBatteryLevel === 0" class="h-7 w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1.5 flex-nowrap">
-              <span class="text-2xl sm:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums">
+          <div class="flex items-center h-[42px] min-w-0">
+            <div v-if="loading && stats.averageBatteryLevel === 0" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
+            <div v-else class="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap min-w-0 overflow-hidden">
+              <span class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums shrink-0">
                 {{ Math.round(stats.averageBatteryLevel) }}%
               </span>
-              <span class="text-[11px] sm:text-xs text-slate-500 font-semibold truncate whitespace-nowrap">
+              <span class="text-[10px] sm:text-[11px] md:text-xs text-slate-500 font-semibold truncate whitespace-nowrap min-w-0">
                 {{ stats.currentStoredEnergyKwh.toFixed(1) }} / {{ stats.totalBatteryCapacityKwh }} {{ t('kwhUnit') }}
               </span>
             </div>
@@ -209,25 +209,25 @@ const estimatedEndTimeDisplay = computed(() => {
       </div>
 
       <!-- 2. Autonomy -->
-      <div class="p-3.5 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border overflow-hidden">
-        <div>
-          <div class="flex items-center gap-1.5 text-slate-500 text-xs font-bold mb-1">
-            <Clock class="w-4 h-4 text-nordic-ochre-600 shrink-0" />
+      <div class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border overflow-hidden">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 text-slate-500 text-[11px] sm:text-xs font-bold mb-1">
+            <Clock class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-nordic-ochre-600 shrink-0" />
             <span class="truncate">{{ t('autonomyForecast') }}</span>
           </div>
 
-          <div class="flex items-center h-[42px]">
-            <div v-if="loading && stats.estimatedComplexAutonomyHours === null" class="h-7 w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1.5 flex-nowrap">
-              <span class="text-2xl sm:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums">
+          <div class="flex items-center h-[42px] min-w-0">
+            <div v-if="loading && stats.estimatedComplexAutonomyHours === null" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
+            <div v-else class="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap min-w-0 overflow-hidden">
+              <span class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums shrink-0">
                 {{ stats.estimatedComplexAutonomyHours !== null ? `~${stats.estimatedComplexAutonomyHours}h` : '—' }}
               </span>
-              <div class="flex flex-col ml-0.5 leading-tight min-w-0">
-                <span class="text-[10px] sm:text-[11px] text-slate-500 font-medium whitespace-nowrap truncate">
+              <div class="flex flex-col ml-0.5 leading-tight min-w-0 overflow-hidden">
+                <span class="text-[9px] sm:text-[10px] md:text-[11px] text-slate-500 font-medium whitespace-nowrap truncate">
                   {{ stats.isBlackout ? t('underDischarge') : t('inReserve') }}
                 </span>
                 <span 
-                  class="text-[9px] sm:text-[10px] text-nordic-ochre-700 font-bold whitespace-nowrap h-[14px] leading-tight transition-opacity duration-300 truncate"
+                  class="text-[9px] sm:text-[10px] md:text-[11px] text-nordic-ochre-700 font-bold whitespace-nowrap h-[14px] leading-tight transition-opacity duration-300 truncate"
                   :class="estimatedEndTimeDisplay ? 'opacity-100' : 'opacity-0'"
                 >
                   {{ estimatedEndTimeDisplay || '—' }}
@@ -245,16 +245,16 @@ const estimatedEndTimeDisplay = computed(() => {
       </div>
 
       <!-- 3. Solar Generation (Displayed if station has PV installed or generation > 0) -->
-      <div v-if="hasSolar || stats.totalSolarPowerW > 50" class="p-3.5 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border overflow-hidden">
-        <div>
-          <div class="flex items-center gap-1.5 text-slate-500 text-xs font-bold mb-1">
-            <Sun class="w-4 h-4 text-nordic-ochre-600 shrink-0" />
+      <div v-if="hasSolar || stats.totalSolarPowerW > 50" class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border overflow-hidden">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 text-slate-500 text-[11px] sm:text-xs font-bold mb-1">
+            <Sun class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-nordic-ochre-600 shrink-0" />
             <span class="truncate">{{ t('solarGen') }}</span>
           </div>
-          <div class="flex items-center h-[42px]">
-            <div v-if="loading && stats.totalSolarPowerW === 0 && stats.totalBuildingPowerW === 0" class="h-7 w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1.5 flex-nowrap">
-              <span class="text-2xl sm:text-3xl font-black text-slate-900 leading-none tabular-nums whitespace-nowrap">
+          <div class="flex items-center h-[42px] min-w-0">
+            <div v-if="loading && stats.totalSolarPowerW === 0 && stats.totalBuildingPowerW === 0" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
+            <div v-else class="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap min-w-0 overflow-hidden">
+              <span class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-none tabular-nums whitespace-nowrap">
                 {{ formatPower(stats.totalSolarPowerW) }}
               </span>
             </div>
@@ -266,20 +266,20 @@ const estimatedEndTimeDisplay = computed(() => {
       </div>
 
       <!-- 4. Building Load -->
-      <div class="p-3.5 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border overflow-hidden">
-        <div>
-          <div class="flex items-center gap-1.5 text-slate-500 text-xs font-bold mb-1">
-            <Building2 class="w-4 h-4 text-slate-600 shrink-0" />
+      <div class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between h-[126px] box-border overflow-hidden">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 text-slate-500 text-[11px] sm:text-xs font-bold mb-1">
+            <Building2 class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600 shrink-0" />
             <span class="truncate">{{ t('buildingLoad') }}</span>
           </div>
 
-          <div class="flex items-center h-[42px]">
-            <div v-if="loading && stats.totalBuildingPowerW === 0" class="h-7 w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1.5 flex-nowrap">
-              <span class="text-2xl sm:text-3xl font-black leading-none whitespace-nowrap tabular-nums" :class="buildingLoadDisplay.textColor">
+          <div class="flex items-center h-[42px] min-w-0">
+            <div v-if="loading && stats.totalBuildingPowerW === 0" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
+            <div v-else class="flex items-baseline gap-1 sm:gap-1.5 flex-nowrap min-w-0 overflow-hidden">
+              <span class="text-xl sm:text-2xl md:text-3xl font-black leading-none whitespace-nowrap tabular-nums shrink-0" :class="buildingLoadDisplay.textColor">
                 {{ buildingLoadDisplay.value }}
               </span>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md border whitespace-nowrap shrink-0" :class="buildingLoadDisplay.badgeClass">
+              <span class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md border whitespace-nowrap shrink-0" :class="buildingLoadDisplay.badgeClass">
                 {{ buildingLoadDisplay.badge }}
               </span>
             </div>

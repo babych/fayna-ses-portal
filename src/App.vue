@@ -364,9 +364,10 @@ const fetchAllTelemetries = async () => {
       console.warn(`Could not fetch data for station ${stationsMeta.value[i].id}:`, res.reason);
     }
   });
+  // Calculate blackout duration first so all complex metrics update in a single atomic tick
+  await updateComplexBlackoutDuration().catch(() => {});
   loading.value = false;
   refreshing.value = false;
-  await updateComplexBlackoutDuration().catch(() => {});
 };
 
 const handleManualRefresh = async () => {
@@ -567,11 +568,14 @@ onMounted(async () => {
     }
   };
 
-  // Seamless auto-reload when a newly activated Service Worker takes control
+  // Seamless auto-reload when an updated Service Worker takes control
+  // Only reload if the page was ALREADY controlled by an older worker
+  // (Prevents double reload on initial page load when first SW claims clients)
   let refreshingPage = false;
   if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+    const hadInitialController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      if (!refreshingPage) {
+      if (hadInitialController && !refreshingPage) {
         refreshingPage = true;
         window.location.reload();
       }
@@ -655,10 +659,6 @@ const getPreviousDateStr = (dateStr: string) => {
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 };
-
-watch(() => telemetries.value.map(t => t.gridPower), () => {
-  updateComplexBlackoutDuration().catch(() => {});
-}, { deep: true });
 
 const updateComplexBlackoutDuration = async () => {
   const list = telemetries.value;
