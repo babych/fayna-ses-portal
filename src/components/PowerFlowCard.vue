@@ -36,7 +36,7 @@ const formatW = (watts: number) => {
       :class="(solarPower > 50 || hasPv) ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'"
     >
       <!-- 1. Solar (Only if generating > 0) -->
-      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs aspect-square box-border justify-between overflow-hidden">
+      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
         <div class="flex flex-col items-center w-full min-w-0">
           <div class="p-1.5 rounded-lg bg-amber-50 text-amber-500 mb-1">
             <Sun class="w-4 h-4" />
@@ -50,7 +50,7 @@ const formatW = (watts: number) => {
 
       <!-- 2. Grid -->
       <div 
-        class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all aspect-square box-border justify-between overflow-hidden relative"
+        class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all h-[92px] sm:h-[96px] box-border justify-between overflow-hidden relative"
         :class="isInitialLoading 
           ? 'border-slate-200/80 bg-white'
           : gridPower > 50 
@@ -91,7 +91,7 @@ const formatW = (watts: number) => {
 
       <!-- 3. Battery -->
       <div 
-        class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all aspect-square box-border justify-between overflow-hidden"
+        class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all h-[92px] sm:h-[96px] box-border justify-between overflow-hidden"
         :class="{
           'border-nordic-green-300 bg-nordic-green-50/50': batteryState === 'charging',
           'border-nordic-ochre-300 bg-nordic-ochre-50/50': batteryState === 'discharging',
@@ -116,7 +116,7 @@ const formatW = (watts: number) => {
       </div>
 
       <!-- 4. Load -->
-      <div class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs aspect-square box-border justify-between overflow-hidden">
+      <div class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
         <div class="flex flex-col items-center w-full min-w-0">
           <div class="p-1.5 rounded-lg bg-slate-100 text-slate-700 mb-1">
             <Building2 class="w-4 h-4" />
