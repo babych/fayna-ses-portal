@@ -220,32 +220,20 @@ const estimatedEndTimeDisplay = computed(() => {
 
           <div class="flex items-center h-[42px] min-w-0">
             <div v-if="loading && stats.estimatedComplexAutonomyHours === null" class="h-7 w-24 sm:w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
-            <div v-else class="flex items-baseline gap-1.5 min-w-0">
+            <div v-else class="flex items-baseline min-w-0">
               <span class="text-2xl sm:text-3xl font-black text-slate-900 leading-none whitespace-nowrap tabular-nums shrink-0">
                 {{ stats.estimatedComplexAutonomyHours !== null ? `~${stats.estimatedComplexAutonomyHours}h` : '—' }}
-              </span>
-              <span class="text-[10px] sm:text-[11px] text-slate-500 font-medium whitespace-nowrap truncate min-w-0">
-                {{ stats.isBlackout ? t('underDischarge') : t('inReserve') }}
               </span>
             </div>
           </div>
         </div>
-        <div class="shrink-0 h-4 leading-4 flex items-center min-w-0">
-          <span 
-            v-if="estimatedEndTimeDisplay"
-            class="text-[10px] sm:text-[11px] text-nordic-ochre-700 font-bold whitespace-nowrap truncate leading-none"
-          >
-            {{ estimatedEndTimeDisplay }}
-          </span>
-          <span 
-            v-else
-            class="text-[10px] sm:text-[11px] text-slate-400 font-medium whitespace-nowrap truncate leading-none"
-          >
-            {{ stats.totalBuildingPowerW > 0 
-              ? t('totalCapacityWithLoad', { kwh: stats.totalBatteryCapacityKwh, kw: (stats.totalBuildingPowerW / 1000).toFixed(2) })
-              : t('totalCapacity', { kwh: stats.totalBatteryCapacityKwh }) 
-            }}
-          </span>
+        <div class="shrink-0 min-w-0 leading-tight">
+          <div class="text-[10px] sm:text-[11px] font-semibold text-slate-500 truncate leading-tight">
+            {{ stats.isBlackout ? t('underDischarge') : t('inReserve') }}
+            <span v-if="estimatedEndTimeDisplay" class="text-nordic-ochre-700 font-bold ml-1">
+              • {{ estimatedEndTimeDisplay }}
+            </span>
+          </div>
         </div>
       </div>
 
