@@ -16,7 +16,13 @@ import {
 } from 'lucide-vue-next';
 
 import type { StationMetadata, StationTelemetry, ComplexAggregate } from '@/types/models';
-import { PRECONFIGURED_STATIONS, DASHBOARD_BASE_URL, createInitialStationTelemetries } from '@/constants/stations';
+import { 
+  PRECONFIGURED_STATIONS, 
+  DASHBOARD_BASE_URL, 
+  createInitialStationTelemetries,
+  TOTAL_PRECONFIGURED_BATTERY_KWH,
+  HAS_PRECONFIGURED_SOLAR
+} from '@/constants/stations';
 import { 
   fetchTodayFeed, 
   fetchDayHistory, 
@@ -767,7 +773,7 @@ const updateComplexBlackoutDuration = async () => {
 const complexStats = ref<ComplexAggregate>({
   totalStations: PRECONFIGURED_STATIONS.length,
   onlineStations: PRECONFIGURED_STATIONS.length,
-  totalBatteryCapacityKwh: 185,
+  totalBatteryCapacityKwh: TOTAL_PRECONFIGURED_BATTERY_KWH,
   currentStoredEnergyKwh: 0,
   averageBatteryLevel: 0,
   totalSolarPowerW: 0,
@@ -1034,6 +1040,7 @@ const handleModalDirectInstall = async () => {
       <HeroOverview 
         :stats="complexStats" 
         :loading="loading" 
+        :has-solar="HAS_PRECONFIGURED_SOLAR || complexStats.totalSolarPowerW > 50"
         @open-complex-outages="openComplexOutages"
       />
 

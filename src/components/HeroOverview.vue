@@ -9,6 +9,7 @@ const { t } = useI18n();
 const props = defineProps<{
   stats: ComplexAggregate;
   loading?: boolean;
+  hasSolar?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -177,7 +178,7 @@ const estimatedEndTimeDisplay = computed(() => {
     <!-- Key Metrics -->
     <div 
       class="grid gap-3 sm:gap-4 md:gap-6 pt-6"
-      :class="stats.totalSolarPowerW > 50 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'"
+      :class="(hasSolar || stats.totalSolarPowerW > 50) ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'"
     >
       <!-- 1. Battery SoC -->
       <div class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between min-h-[126px] h-full box-border overflow-hidden">
@@ -243,15 +244,15 @@ const estimatedEndTimeDisplay = computed(() => {
         </p>
       </div>
 
-      <!-- 3. Solar Generation (Only displayed if generation > 0) -->
-      <div v-if="stats.totalSolarPowerW > 50" class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between min-h-[126px] h-full box-border overflow-hidden">
+      <!-- 3. Solar Generation (Displayed if station has PV installed or generation > 0) -->
+      <div v-if="hasSolar || stats.totalSolarPowerW > 50" class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between min-h-[126px] h-full box-border overflow-hidden">
         <div>
           <div class="flex items-center gap-1.5 text-slate-500 text-xs font-bold mb-1">
             <Sun class="w-4 h-4 text-nordic-ochre-600 shrink-0" />
             <span class="truncate">{{ t('solarGen') }}</span>
           </div>
           <div class="flex items-center min-h-[42px] py-0.5">
-            <div v-if="loading && stats.totalSolarPowerW === 0" class="h-7 w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
+            <div v-if="loading && stats.totalSolarPowerW === 0 && stats.totalBuildingPowerW === 0" class="h-7 w-28 rounded-lg bg-slate-200/80 animate-pulse"></div>
             <div v-else class="flex items-baseline gap-1.5 flex-wrap">
               <span class="text-2xl sm:text-3xl font-black text-slate-900 leading-none tabular-nums whitespace-nowrap">
                 {{ formatPower(stats.totalSolarPowerW) }}

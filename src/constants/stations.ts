@@ -85,6 +85,15 @@ export const PRECONFIGURED_STATIONS: StationMetadata[] = [
   },
 ];
 
+export const TOTAL_PRECONFIGURED_BATTERY_KWH = PRECONFIGURED_STATIONS.reduce(
+  (acc, st) => acc + (st.batteryKwh || 0),
+  0
+);
+
+export const HAS_PRECONFIGURED_SOLAR = PRECONFIGURED_STATIONS.some(
+  (st) => (st.pvKw || 0) > 0
+);
+
 /**
  * Creates static placeholder telemetry objects for preconfigured stations.
  * This ensures the cards exist in the DOM from the very first frame (Zero-CLS),
