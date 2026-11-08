@@ -35,20 +35,7 @@ const formatW = (watts: number) => {
       class="relative z-10 grid gap-2 text-center transition-all duration-300"
       :class="(solarPower > 50 || hasPv) ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'"
     >
-      <!-- 1. Solar (Only if generating > 0) -->
-      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
-        <div class="flex flex-col items-center w-full min-w-0">
-          <div class="p-1.5 rounded-lg bg-amber-50 text-amber-500 mb-1">
-            <Sun class="w-4 h-4" />
-          </div>
-          <span class="text-[11px] text-slate-500 font-medium whitespace-nowrap truncate max-w-full h-[16px] leading-[16px]">{{ t('solar') }}</span>
-        </div>
-        <div class="flex items-center justify-center w-full h-[24px]">
-          <span class="text-sm font-bold text-slate-800 tabular-nums leading-none">{{ formatW(solarPower) }}</span>
-        </div>
-      </div>
-
-      <!-- 2. Grid -->
+      <!-- 1. Grid / Blackout (First) -->
       <div 
         class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all h-[92px] sm:h-[96px] box-border justify-between overflow-hidden relative"
         :class="isInitialLoading 
@@ -89,7 +76,7 @@ const formatW = (watts: number) => {
         </div>
       </div>
 
-      <!-- 3. Battery -->
+      <!-- 2. Battery -->
       <div 
         class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all h-[92px] sm:h-[96px] box-border justify-between overflow-hidden"
         :class="{
@@ -115,7 +102,7 @@ const formatW = (watts: number) => {
         </div>
       </div>
 
-      <!-- 4. Load -->
+      <!-- 3. Load -->
       <div class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
         <div class="flex flex-col items-center w-full min-w-0">
           <div class="p-1.5 rounded-lg bg-slate-100 text-slate-700 mb-1">
@@ -125,6 +112,19 @@ const formatW = (watts: number) => {
         </div>
         <div class="flex items-center justify-center w-full h-[24px]">
           <span class="text-sm font-bold text-slate-800 tabular-nums leading-none">{{ formatW(buildingPower) }}</span>
+        </div>
+      </div>
+
+      <!-- 4. Solar (Last, only if generating > 0 or hasPv) -->
+      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
+        <div class="flex flex-col items-center w-full min-w-0">
+          <div class="p-1.5 rounded-lg bg-amber-50 text-amber-500 mb-1">
+            <Sun class="w-4 h-4" />
+          </div>
+          <span class="text-[11px] text-slate-500 font-medium whitespace-nowrap truncate max-w-full h-[16px] leading-[16px]">{{ t('solar') }}</span>
+        </div>
+        <div class="flex items-center justify-center w-full h-[24px]">
+          <span class="text-sm font-bold text-slate-800 tabular-nums leading-none">{{ formatW(solarPower) }}</span>
         </div>
       </div>
     </div>
