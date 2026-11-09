@@ -29,15 +29,15 @@ const formatW = (watts: number) => {
 </script>
 
 <template>
-  <div class="relative w-full rounded-lg bg-slate-50 border border-slate-200 p-4 overflow-hidden">
+  <div class="relative w-full rounded-lg bg-slate-50 border border-slate-200 p-3 sm:p-4 overflow-hidden">
     <!-- Grid items layout: fixed 3 columns by default, expanding to 4 only when solar generates -->
     <div 
-      class="relative z-10 grid gap-2 text-center transition-all duration-300"
+      class="relative z-10 grid gap-1.5 sm:gap-2 text-center transition-all duration-300"
       :class="(solarPower > 50 || hasPv) ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'"
     >
       <!-- 1. Grid / Blackout (First) -->
       <div 
-        class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all h-[92px] sm:h-[96px] box-border justify-between overflow-hidden relative"
+        class="flex flex-col items-center p-1.5 sm:p-2 rounded-lg bg-white border shadow-xs transition-all h-[92px] sm:h-[96px] box-border justify-between overflow-hidden relative"
         :class="isInitialLoading 
           ? 'border-slate-200/80 bg-white'
           : gridPower > 50 
@@ -56,7 +56,7 @@ const formatW = (watts: number) => {
             <Zap class="w-4 h-4" />
           </div>
           <span 
-            class="text-[11px] font-medium whitespace-nowrap truncate max-w-full h-[16px] leading-[16px] text-slate-500"
+            class="text-[10px] sm:text-[11px] font-medium whitespace-nowrap truncate max-w-full h-[16px] leading-[16px] text-slate-500 tracking-tight"
           >
             <template v-if="!isInitialLoading && gridPower <= 20">
               <span class="text-nordic-terracotta-700 font-bold">{{ t('gridBlackout').split(' ')[0] }}</span>
@@ -78,7 +78,7 @@ const formatW = (watts: number) => {
 
       <!-- 2. Battery -->
       <div 
-        class="flex flex-col items-center p-2 rounded-lg bg-white border shadow-xs transition-all h-[92px] sm:h-[96px] box-border justify-between overflow-hidden"
+        class="flex flex-col items-center p-1.5 sm:p-2 rounded-lg bg-white border shadow-xs transition-all h-[92px] sm:h-[96px] box-border justify-between overflow-hidden"
         :class="{
           'border-nordic-green-300 bg-nordic-green-50/50': batteryState === 'charging',
           'border-nordic-ochre-300 bg-nordic-ochre-50/50': batteryState === 'discharging',
@@ -89,7 +89,7 @@ const formatW = (watts: number) => {
           <div class="p-1.5 rounded-lg bg-nordic-green-50 text-nordic-green-700 mb-1">
             <Battery class="w-4 h-4" />
           </div>
-          <span class="text-[11px] text-slate-500 font-medium tabular-nums whitespace-nowrap truncate max-w-full h-[16px] leading-[16px]">
+          <span class="text-[10px] sm:text-[11px] text-slate-500 font-medium tabular-nums whitespace-nowrap truncate max-w-full h-[16px] leading-[16px] tracking-tight">
             {{ t('battery') }} ({{ Math.round(batteryLevel) }}%)
           </span>
         </div>
@@ -103,12 +103,12 @@ const formatW = (watts: number) => {
       </div>
 
       <!-- 3. Load -->
-      <div class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
+      <div class="flex flex-col items-center p-1.5 sm:p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
         <div class="flex flex-col items-center w-full min-w-0">
           <div class="p-1.5 rounded-lg bg-slate-100 text-slate-700 mb-1">
             <Building2 class="w-4 h-4" />
           </div>
-          <span class="text-[11px] text-slate-500 font-medium whitespace-nowrap truncate max-w-full h-[16px] leading-[16px]">{{ t('load') }}</span>
+          <span class="text-[10px] sm:text-[11px] text-slate-500 font-medium whitespace-nowrap truncate max-w-full h-[16px] leading-[16px] tracking-tight">{{ t('load') }}</span>
         </div>
         <div class="flex items-center justify-center w-full h-[24px]">
           <span class="text-sm font-bold text-slate-800 tabular-nums leading-none">{{ formatW(buildingPower) }}</span>
@@ -116,12 +116,12 @@ const formatW = (watts: number) => {
       </div>
 
       <!-- 4. Solar (Last, only if generating > 0 or hasPv) -->
-      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
+      <div v-if="solarPower > 50 || hasPv" class="flex flex-col items-center p-1.5 sm:p-2 rounded-lg bg-white border border-slate-200/80 shadow-xs h-[92px] sm:h-[96px] box-border justify-between overflow-hidden">
         <div class="flex flex-col items-center w-full min-w-0">
           <div class="p-1.5 rounded-lg bg-amber-50 text-amber-500 mb-1">
             <Sun class="w-4 h-4" />
           </div>
-          <span class="text-[11px] text-slate-500 font-medium whitespace-nowrap truncate max-w-full h-[16px] leading-[16px]">{{ t('solar') }}</span>
+          <span class="text-[10px] sm:text-[11px] text-slate-500 font-medium whitespace-nowrap truncate max-w-full h-[16px] leading-[16px] tracking-tight">{{ t('solar') }}</span>
         </div>
         <div class="flex items-center justify-center w-full h-[24px]">
           <span class="text-sm font-bold text-slate-800 tabular-nums leading-none">{{ formatW(solarPower) }}</span>
