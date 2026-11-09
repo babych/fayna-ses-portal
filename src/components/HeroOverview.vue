@@ -177,8 +177,7 @@ const estimatedEndTimeDisplay = computed(() => {
 
     <!-- Key Metrics: 3 levels on all screen sizes with comfortable breathing room & zero clipping -->
     <div 
-      class="grid gap-2.5 sm:gap-4 md:gap-6 pt-5 sm:pt-6"
-      :class="(hasSolar || stats.totalSolarPowerW > 50) ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'"
+      class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 pt-5 sm:pt-6"
     >
       <!-- 1. Battery SoC -->
       <div class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between min-h-[136px] box-border">
@@ -251,7 +250,7 @@ const estimatedEndTimeDisplay = computed(() => {
       </div>
 
       <!-- 3. Solar Generation (Displayed if station has PV installed or generation > 0) -->
-      <div v-if="hasSolar || stats.totalSolarPowerW > 50" class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between min-h-[136px] box-border">
+      <div class="p-3 sm:p-4 rounded-lg bg-slate-50 border border-slate-200/80 flex flex-col justify-between min-h-[136px] box-border">
         <div class="min-w-0">
           <div class="flex items-center gap-1.5 text-slate-500 text-[11px] sm:text-xs font-bold mb-1">
             <Sun class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-nordic-ochre-600 shrink-0" />

@@ -391,10 +391,10 @@ let refreshInterval: any = null;
 let hasScrolledToInitialStation = false;
 
 const scrollToStationCard = (stationId: string, immediate = false) => {
-  nextTick(() => {
+  // Use requestAnimationFrame to ensure DOM layout is completely computed before scrolling
+  requestAnimationFrame(() => {
     const el = document.getElementById(`station-${stationId}`);
     if (el) {
-      // Precise offset factoring sticky header (h-16 = 64px) + breathing room (16px)
       const headerEl = document.querySelector('header');
       const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 64;
       const headerOffset = headerHeight + 16;
@@ -402,9 +402,10 @@ const scrollToStationCard = (stationId: string, immediate = false) => {
       const elementPosition = el.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
+      // When user clicks share or arrives with target station, smooth scroll prevents layout jump
       window.scrollTo({
         top: Math.max(0, offsetPosition),
-        behavior: immediate ? 'auto' : 'smooth',
+        behavior: 'smooth',
       });
 
       el.classList.add('ring-2', 'ring-emerald-500', 'ring-offset-4');
