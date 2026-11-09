@@ -122,6 +122,7 @@ export function createInitialStationTelemetries(stations: StationMetadata[] = PR
     remainingEnergyKwh: 0,
     estimatedAutonomyHours: null,
 
+    avgLoadW: 0,
     solarEnergyTodayKwh: 0,
     buildingEnergyTodayKwh: 0,
     gridEnergyTodayKwh: 0,

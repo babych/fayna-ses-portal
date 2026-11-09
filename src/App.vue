@@ -825,24 +825,34 @@ watchEffect(() => {
 
   let estimatedHours: number | null = null;
   if (currentStored > 0) {
-    // 1. If complex is in blackout (or any stations are actively discharging),
-    // calculate autonomy based on the actual discharge rate of discharging batteries
-    let totalDischargeW = 0;
+    let totalAvgLoadW = 0;
+    let activeBlackoutDischargeW = 0;
+
     for (const st of list) {
-      if (st.batteryPower > 50) {
-        totalDischargeW += st.batteryPower;
+      if (!st.isDrained) {
+        totalAvgLoadW += (st.avgLoadW || 0);
+        // Only count battery discharge if the station is in an actual blackout
+        const isStationInBlackout = Math.abs(st.gridPower) <= 20 && st.batteryPower > 50;
+        if (isStationInBlackout) {
+          activeBlackoutDischargeW += st.batteryPower;
+        }
       }
     }
 
-    if (totalDischargeW > 300) {
-      // Discharging right now (active blackout)
-      const dischargeKw = totalDischargeW / 1000;
+    // Baseline floor per active station (~500W each)
+    const baselineW = Math.max(1500, onlineCount * 500);
+
+    if (isBlackout && activeBlackoutDischargeW > 300) {
+      // Active blackout: forecast based on current real-time battery discharge
+      const dischargeKw = activeBlackoutDischargeW / 1000;
       estimatedHours = Math.round((currentStored / dischargeKw) * 10) / 10;
     } else {
-      // Standby / On-grid: realistic complex reserve forecast based on active building load
-      // Real-world baseline floor is ~500W per active station
-      const baselineKw = Math.max(1.5, onlineCount * 0.5);
-      const effectiveKw = Math.max(baselineKw, totalBuilding / 1000);
+      // Standby / Grid connected: calculate expected autonomy when grid goes down
+      // using average daily consumption or active building load
+      const referenceLoadW = totalAvgLoadW > 0 
+        ? totalAvgLoadW 
+        : (totalBuilding > 0 ? totalBuilding : baselineW);
+      const effectiveKw = Math.max(baselineW, referenceLoadW) / 1000;
       estimatedHours = Math.round((currentStored / effectiveKw) * 10) / 10;
     }
   }

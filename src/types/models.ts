@@ -59,6 +59,7 @@ export interface StationTelemetry {
   estimatedAutonomyHours: number | null; // estimated hours remaining
 
   // Daily statistics
+  avgLoadW: number;
   solarEnergyTodayKwh: number;
   buildingEnergyTodayKwh: number;
   gridEnergyTodayKwh: number;

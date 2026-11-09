@@ -233,6 +233,7 @@ export function buildStationTelemetry(
     remainingEnergyKwh,
     estimatedAutonomyHours,
 
+    avgLoadW,
     solarEnergyTodayKwh: Number(feed.day?.pv ?? 0),
     buildingEnergyTodayKwh: Number(feed.day?.load ?? 0),
     gridEnergyTodayKwh: Number(feed.day?.grid ?? 0),
