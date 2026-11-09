@@ -210,10 +210,14 @@ export async function checkAndDispatchOutages(env: Env): Promise<{
   // 3. Craft notification payload
   let title = '⚡ Файна Таун: Енергопостачання';
   let body = '';
-  // Option 1 Standard:
-  // - Full Outage (all stations off) & Full Power Restored (0 stations off) -> audible / urgent (silent: false)
-  // - Partial Outage (e.g. 1-4 stations off) -> silent / discreet notification without beep/vibrate (silent: true)
-  const isPartialOutage = currentBlackoutCount > 0 && currentBlackoutCount < activeStations.length;
+  // Outage Sound & Urgency Policy:
+  // - Full Outage (100% stations off) -> audible / urgent (silent: false)
+  // - Full Restoration AFTER Full Outage (current = 0, prev = all) -> audible / urgent (silent: false)
+  // - Restoration after Partial Outage (current = 0, prev < all) -> silent / discreet (silent: true)
+  // - Partial Outage (1..N-1 stations off) -> silent / discreet (silent: true)
+  const isFullBlackout = currentBlackoutCount === activeStations.length;
+  const isRestorationAfterFullBlackout = currentBlackoutCount === 0 && prevBlackoutCount === activeStations.length;
+  const isAudibleComplexEvent = isFullBlackout || isRestorationAfterFullBlackout;
 
   const onlineWithPowerCount = activeStations.length - currentBlackoutCount;
 
@@ -296,7 +300,7 @@ export async function checkAndDispatchOutages(env: Env): Promise<{
       sub,
       title: recipientTitle,
       body: recipientBody,
-      silent: scope === 'all' ? isPartialOutage : false,
+      silent: scope === 'all' ? !isAudibleComplexEvent : false,
       url: scope !== 'all' ? `/?station=${scope}` : '/',
     });
   }
