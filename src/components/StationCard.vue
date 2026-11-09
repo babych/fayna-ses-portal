@@ -52,7 +52,7 @@ const formatTimeAgo = (seconds: number) => {
 
 <template>
   <div 
-    class="group relative rounded-xl bg-white border border-slate-200/90 p-5 shadow-sm hover:shadow-xl hover:border-slate-300 transition-[box-shadow,border-color] duration-300 flex flex-col justify-between"
+    class="group relative rounded-xl bg-white border border-slate-200/90 p-3.5 sm:p-5 shadow-sm hover:shadow-xl hover:border-slate-300 transition-[box-shadow,border-color] duration-300 flex flex-col justify-between"
   >
     <div>
       <div class="flex items-start justify-between gap-3">
